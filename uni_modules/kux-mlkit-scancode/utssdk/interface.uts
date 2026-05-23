@@ -1,0 +1,433 @@
+/**
+ * 回调定义
+ */
+export type CommonResultCallback = {
+	statusCode: number;
+	message: string;
+	data: any;
+};
+
+/**
+ * 二维码解析数据类型
+ */
+export type QRCodeType = 'text'
+| 'url'
+| 'wifi'
+| 'phone'
+| 'sms'
+| 'email'
+| 'contact'
+| 'geo'
+| 'calendar'
+| 'driverLicense'
+
+/**
+ * 文本数据类型结构
+ */
+export type TypeText = {
+	text: string;
+};
+
+/**
+ * URL数据类型结构
+ */
+export type TypeURL = {
+	url: string;
+};
+
+/**
+ * WIFI数据类型结构
+ */
+export type TypeWIFI = {
+	ssid: string;
+	password: string;
+	type: string;
+};
+
+/**
+ * Phone数据类型结构
+ */
+export type TypePhone = {
+	number: string;
+};
+
+/**
+ * Sms数据类型结构
+ */
+export type TypeSms = {
+	number: string;
+	message: string;
+};
+
+/**
+ * Email数据类型结构
+ */
+export type TypeEmail = {
+	address: string;
+	subject: string;
+	body: string;
+};
+
+/**
+ * 联系人信息数据类型结构
+ */
+export type TypeContact = {
+	name: string;
+	address: string;
+	phone: string;
+	email: string;
+};
+
+/**
+ * 地理位置信息数据类型结构
+ */
+export type TypeGeo = {
+	latitude: string;
+	longitude: string;
+};
+
+/**
+ * 日历事件数据类型结构
+ */
+export type TypeCalendar = {
+	summary: string;
+	location: string;
+	description: string;
+	start: string;
+	end: string;
+};
+
+/**
+ * 驾驶证数据类型结构
+ */
+export type TypeDriverLicense = {
+	firstName: string;
+	lastName: string;
+	middleName: string;
+	addressState: string;
+	addressCity: string;
+	addressStreet: string;
+	addressZip: string;
+	birthDate: string;
+	documentType: string;
+	expiryDate: string;
+	gender: string;
+	issueDate: string;
+	licenseNumber: string;
+	issuingCountry: string;
+};
+
+/**
+ * 单个二维码数据结构定义
+ */
+export type SingleQRCodeData = {
+	type: QRCodeType;
+	data: any;
+};
+
+/**
+ * 识别二维码成功回调定义
+ */
+export type SuccessCallback = {
+	statusCode: number;
+	message: string;
+	data: SingleQRCodeData[];
+};
+
+/**
+ * 点击单个二维码成功回调定义
+ */
+export type OnBarcodeCallback = {
+	statusCode: number;
+	message: string;
+	data: SingleQRCodeData;
+};
+
+/**
+ * 扫码前的配置
+ */
+export type ScanCodeConfig = {
+	/**
+	 * 扫一扫界面的标题
+	 */
+	title?: string;
+	/**
+	 * 扫一扫界面的提示文字
+	 */
+	tip?: string;
+	/**
+	 * 是否弹出扫码阶段提示语，如“扫码完成”，“识别结果：XXX”
+	 * + 默认为 `true`
+	 */
+	showTip?: boolean;
+	/**
+	 * 扫码成功提示文字
+	 */
+	successTip?: string;
+	/**
+	 * 扫码失败提示文字
+	 */
+	failureTip?: string;
+	/**
+	 * 扫一扫界面的关闭按钮文字
+	 * + 设置该参数后，将替换原来默认界面的关闭按钮
+	 */
+	exitText?: string;
+	/**
+	 * 扫一扫界面的取消按钮文字
+	 */
+	cancelText?: string;
+	/**
+	 * 是否显示闪光灯按钮
+	 * + 默认为 `true`
+	 */
+	showFlash?: boolean;
+	/**
+	 * 打开闪光灯时按钮的文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOnText?: string;
+	/**
+	 * 关闭闪光灯时按钮的文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOffText?: string;
+	/**
+	 * 打开闪光灯时按钮的背景色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOnColor?: string;
+	/**
+	 * 关闭闪光灯时按钮的背景色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOffColor?: string;
+	/**
+	 * 打开闪光灯时的提示文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOnTip?: string;
+	/**
+	 * 打开闪光灯时的文字颜色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOnTextColor?: string;
+	/**
+	 * 关闭闪光灯时的提示文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOffTip?: string;
+	/**
+	 * 关闭闪光灯时的文字颜色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	flashOffTextColor?: string;
+	/**
+	 * 是否显示相册按钮
+	 * + 默认为 `false`
+	 */
+	showAlbum?: boolean;
+	/**
+	 * 是否显示返回按钮
+	 * + 默认为 `true`
+	 * + 建议开启
+	 */
+	showBack?: boolean;
+	/**
+	 * 是否显示扫描线
+	 * + 默认为 `true`
+	 */
+	showLine?: boolean;
+	/**
+	 * 扫描线动画时长，单位毫秒
+	 * + 默认值为 `3000`
+	 */
+	lineDuration?: number;
+	// /**
+	//  * 扫描线起始位置
+	//  * + 不建议自定义，除非不使用默认的界面
+	//  */
+	// lineStartY?: number;
+	// /**
+	//  * 扫描线结束位置
+	//  */
+	// lineEndY?: (floatYFraction: number) => number;
+	/**
+	 * 扫描成功后是否震动
+	 * + 默认为 `true`
+	 */
+	vibrate?: boolean;
+	/**
+	 * 初始化调焦大小
+	 * + 默认为 `1.0`
+	 */
+	initZoomRatio?: number;
+	/**
+	 * 允许最大调焦大小
+	 * + 默认为 `1.0`
+	 */
+	maxZoomRatio?: number;
+	/**
+	 * 是否自动全屏
+	 * + 默认为 `true`
+	 */
+	autoFullScreen?: boolean;
+	/**
+	 * 是否启用手势缩放
+	 * + 默认为 `true`
+	 */
+	touchZoom?: boolean;
+	/**
+	 * 是否启用双击缩放
+	 * + 默认为 `true`
+	 */
+	doubleTapZoom?: boolean;
+	/**
+	 * 是否开启连续扫码
+	 * + 默认为 `false`
+	 */
+	continuousScanning?: boolean;
+	/**
+	 * 是否开启批量扫码
+	 * + 默认为 `true`
+	 */
+	batchScanning?: boolean;
+	/**
+	 * 二维码识别圆圈半径大小
+	 * + 默认为 `50`
+	 */
+	markCircleRadius?: number;
+	/**
+	 * 二维码识别圆圈颜色
+	 * + 默认为 `#00BC79`
+	 */
+	markCircleColor?: string;
+	/**
+	 * 二维码识别圆圈边框颜色
+	 * + 默认为 `#FFFFFF`
+	 */
+	markCircleStrokeColor?: string;
+	/**
+	 * 二维码识别圆圈边框宽度
+	 * + 默认为 `3`
+	 */
+	markCircleStrokeWidth?: number;
+	/**
+	 * 二维码识别圆圈是否开启动画
+	 * + 默认为 `true`
+	 */
+	markCircleAnimate?: boolean;
+	/**
+	 * 是否开启二维码只在屏幕中心识别
+	 * + 暂时不支持
+	 */
+	centerBarcode?: boolean;
+	/**
+	 * 点击返回按钮是否关闭扫一扫界面
+	 * + 默认为 `true`
+	 */
+	backFinish?: boolean;
+	/**
+	 * 点击取消按钮是否关闭扫一扫界面
+	 * + 默认为 `false`
+	 */
+	cancelFinish?: boolean;
+	/**
+	 * 识别到二维码时是否显示蒙层，建议开启，这样能突出显示二维码上面的圆圈标记
+	 * + 默认为 `true`
+	 */
+	showMask?: boolean;
+	/**
+	 * 识别到二维码时蒙层颜色
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `#80000000`
+	 */
+	maskColor?: string;
+	/**
+	 * 识别到二维码时蒙层透明度
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `0.5`
+	 */
+	maskAlpha?: number;
+	/**
+	 * 识别到二维码时显示蒙层的过渡动画时长，单位毫秒
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `300`
+	 */
+	maskDuration?: number;
+	/**
+	 * 识别二维码成功后是否自动关闭扫一扫界面
+	 * + 默认为 `false`
+	 * + `v1.0.2`
+	 */
+	successFinish?: boolean;
+	/**
+	 * 识别到二维码后成功回调前的自定义处理
+	 */
+	beforeSuccess?: (callback: CommonResultCallback) => void;
+	/**
+	 * 识别到二维码后成功回调
+	 */
+	success?: (callback: SuccessCallback) => void;
+	/**
+	 * 识别到二维码后失败回调
+	 */
+	fail?: (callback: CommonResultCallback) => void;
+	/**
+	 * 识别到二维码后完成回调
+	 */
+	complete?: (callback: CommonResultCallback) => void;
+	/**
+	 * 识别到二维码后执行取消回调前的自定义处理
+	 * + 暂不支持
+	 */
+	beforeCancel?: () => boolean;
+	/**
+	 * 识别到二维码后点击取消回调
+	 */
+	onCancel?: () => void;
+	/**
+	 * 识别到二维码后点击返回回调
+	 */
+	onBack?: () => void;
+	/**
+	 * 识别到二维码后点击相册回调
+	 */
+	onAlbum?: () => void;
+	/**
+	 * 识别到二维码后打开闪光灯回调
+	 */
+	onFlashOn?: () => void;
+	/**
+	 * 识别到二维码后关闭闪光灯回调
+	 */
+	onFlashOff?: () => void;
+	/**
+	 * 识别到二维码后手势缩放回调
+	 * @param {number} currentZoomRatio 当前焦距
+	 */
+	onZoom?: (currentZoomRatio: number) => void;
+	/**
+	 * 识别到二维码后执行双击缩放回调
+	 * @param {number} currentZoomRatio 当前焦距
+	 */
+	onDoubleTap?: (currentZoomRatio: number) => void;
+	/**
+	 * 识别到二维码后连续扫码回调
+	 */
+	onContinuous?: (callback: SuccessCallback) => void;
+	/**
+	 * 点击单个二维码的回调
+	 */
+	onBarcode?: (callback: OnBarcodeCallback) => void;
+	/**
+	 * 用户拒绝相机权限时的回调
+	 */
+	onCameraPermissionDenied?: () => void;
+	/**
+	 * 用户拒绝相册权限时的回调
+	 */
+	onAlbumPermissionDenied?: () => void;
+};
+
+export * from './app-android/scanCodeManager';

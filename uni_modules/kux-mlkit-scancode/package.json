@@ -1,0 +1,89 @@
+{
+  "id": "kux-mlkit-scancode",
+  "displayName": "kux-mlkit-scancode",
+  "version": "1.0.7",
+  "description": "基于谷歌条形码扫描的扫码插件，提供了大量的API方法供开发者们自定义界面，支持开发者自定义xml方式完全使用自己的界面",
+  "keywords": [
+    "kux-mlkit-scancode",
+    "scancode",
+    "扫码",
+    "二维码",
+    "扫描"
+],
+  "repository": "https://gitcode.com/kviewui/kux-mlkit-scancode",
+  "engines": {
+    "HBuilderX": "^3.6.8"
+  },
+  "dcloudext": {
+    "type": "uts",
+    "sale": {
+      "regular": {
+        "price": "0.00"
+      },
+      "sourcecode": {
+        "price": "0.00"
+      }
+    },
+    "contact": {
+      "qq": "1709233528"
+    },
+    "declaration": {
+      "ads": "无",
+      "data": "插件不采集任何数据",
+      "permissions": "相机权限、相册权限、闪光灯权限"
+    },
+    "npmurl": ""
+  },
+  "uni_modules": {
+    "dependencies": [],
+    "encrypt": [],
+    "platforms": {
+      "cloud": {
+        "tcb": "y",
+        "aliyun": "y",
+        "alipay": "y"
+      },
+      "client": {
+        "Vue": {
+          "vue2": "n",
+          "vue3": "y"
+        },
+        "App": {
+            "app-android": {
+                "minVersion": "21"
+            },
+            "app-ios": "n",
+            "app-harmony": "u"
+        },
+        "H5-mobile": {
+          "Safari": "n",
+          "Android Browser": "n",
+          "微信浏览器(Android)": "n",
+          "QQ浏览器(Android)": "n"
+        },
+        "H5-pc": {
+          "Chrome": "n",
+          "IE": "n",
+          "Edge": "n",
+          "Firefox": "n",
+          "Safari": "n"
+        },
+        "小程序": {
+          "微信": "n",
+          "阿里": "n",
+          "百度": "n",
+          "字节跳动": "n",
+          "QQ": "n",
+          "钉钉": "n",
+          "快手": "n",
+          "飞书": "n",
+          "京东": "n"
+        },
+        "快应用": {
+          "华为": "n",
+          "联盟": "n"
+        }
+      }
+    }
+  }
+}

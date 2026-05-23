@@ -1,0 +1,817 @@
+import ScancodeConfig from 'cn.kviewui.scancode.ScancodeConfig';
+import ArrayList from "java.util.ArrayList";
+import QRCodeData from "cn.kviewui.scancode.QRCodeData";
+import ResponseStateConfig from "cn.kviewui.scancode.ResponseStateConfig";
+import { CommonResultCallback, ScanCodeConfig, TypeText, TypeURL, TypeWIFI, SingleQRCodeData, TypePhone, TypeSms, TypeEmail, TypeContact, TypeGeo, TypeCalendar, TypeDriverLicense, SuccessCallback, OnBarcodeCallback } from '../interface';
+import BarcodeScanningActivity from 'cn.kviewui.scancode.BarcodeScanningActivity';
+
+/**
+ * 默认配置
+ */
+export function configInit (config: ScanCodeConfig = {} as ScanCodeConfig) {
+	/**
+	 * 扫一扫界面的标题
+	 */
+	ScancodeConfig.title = config.title ?? '扫一扫';
+	/**
+	 * 扫一扫界面的提示文字
+	 */
+	ScancodeConfig.tip = config.tip ?? '正在扫描，请稍候';
+	/**
+	 * 是否弹出扫码阶段提示语，如“扫码完成”，“识别结果：XXX”
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.showTip = config.showTip ?? true;
+	/**
+	 * 扫码成功提示文字
+	 */
+	ScancodeConfig.successTip = config.successTip ?? '扫描成功';
+	/**
+	 * 扫码失败提示文字
+	 */
+	ScancodeConfig.failureTip = config.failureTip ?? '扫描失败，请重试';
+	/**
+	 * 扫一扫界面的关闭按钮文字
+	 * + 设置该参数后，将替换原来默认界面的关闭按钮
+	 */
+	ScancodeConfig.exitText = config.exitText ?? '';
+	/**
+	 * 扫一扫界面的取消按钮文字
+	 */
+	ScancodeConfig.cancelText = config.cancelText ?? '取消';
+	/**
+	 * 是否显示闪光灯按钮
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.showFlash = config.showFlash ?? true;
+	/**
+	 * 打开闪光灯时按钮的文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOnText = config.flashOnText ?? '轻触关闭';
+	/**
+	 * 关闭闪光灯时按钮的文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOffText = config.flashOffText ?? '轻触照亮';
+	/**
+	 * 打开闪光灯时按钮的背景色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOnColor = config.flashOnColor ?? '#00BC79';
+	/**
+	 * 关闭闪光灯时按钮的背景色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOffColor = config.flashOffColor ?? '#FFFFFF';
+	/**
+	 * 打开闪光灯时的提示文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOnTip = config.flashOnTip ?? '闪光灯已打开';
+	/**
+	 * 打开闪光灯时的文字颜色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOnTextColor = config.flashOnTextColor ?? '#00BC79';
+	/**
+	 * 关闭闪光灯时的提示文字
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOffTip = config.flashOffTip ?? '闪光灯已关闭';
+	/**
+	 * 关闭闪光灯时的文字颜色
+	 * + `showFlash` 为 `true` 时生效
+	 */
+	ScancodeConfig.flashOffTextColor = config.flashOffTextColor ?? '#FFFFFF';
+	/**
+	 * 是否显示相册按钮
+	 * + 默认为 `false`
+	 */
+	ScancodeConfig.showAlbum = config.showAlbum ?? false;
+	/**
+	 * 是否显示返回按钮
+	 * + 默认为 `true`
+	 * + 建议开启
+	 */
+	ScancodeConfig.showBack = config.showBack ?? true;
+	/**
+	 * 是否显示扫描线
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.showLine = config.showLine ?? true;
+	/**
+	 * 扫描线动画时长，单位毫秒
+	 * + 默认值为 `3000`
+	 */
+	ScancodeConfig.lineDuration = (config.lineDuration ?? 3000).toLong();
+	/**
+	 * 扫描成功后是否震动
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.vibrate = config.vibrate ?? true;
+	/**
+	 * 初始化调焦大小
+	 * + 默认为 `1.0`
+	 */
+	ScancodeConfig.initZoomRatio = (config.initZoomRatio ?? 1.0).toFloat();
+	/**
+	 * 允许最大调焦大小
+	 * + 自动缩放焦距时有效，不过测试了谷歌的自动调焦功能时灵时不灵，所以目前这个参数可以忽略
+	 * + 默认为 `5.0`
+	 */
+	ScancodeConfig.maxZoomRatio = (config.maxZoomRatio ?? 5.0).toFloat();
+	/**
+	 * 是否自动全屏
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.autoFullScreen = config.autoFullScreen ?? true;
+	/**
+	 * 是否启用手势缩放
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.touchZoom = config.touchZoom ?? true;
+	/**
+	 * 是否启用双击缩放
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.doubleTapZoom = config.doubleTapZoom ?? true;
+	/**
+	 * 是否开启连续扫码
+	 * + 默认为 `false`
+	 */
+	ScancodeConfig.continuousScanning = config.continuousScanning ?? false;
+	/**
+	 * 是否开启批量扫码
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.batchScanning = config.batchScanning ?? true;
+	/**
+	 * 二维码识别圆圈半径大小
+	 * + 默认为 `50`
+	 */
+	ScancodeConfig.markCircleRadius = (config.markCircleRadius ?? 50).toFloat();
+	/**
+	 * 二维码识别圆圈颜色
+	 * + 默认为 `#00BC79`
+	 */
+	ScancodeConfig.markCircleColor = config.markCircleColor ?? '#00BC79';
+	/**
+	 * 二维码识别圆圈边框颜色
+	 * + 默认为 `#FFFFFF`
+	 */
+	ScancodeConfig.markCircleStrokeColor = config.markCircleStrokeColor ?? '#FFFFFF';
+	/**
+	 * 二维码识别圆圈边框宽度
+	 * + 默认为 `3`
+	 */
+	ScancodeConfig.markCircleStrokeWidth = (config.markCircleStrokeWidth ?? 3.0).toFloat();
+	/**
+	 * 二维码识别圆圈是否开启动画
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.markCircleAnimate = config.markCircleAnimate ?? true;
+	/**
+	 * 是否开启二维码只在屏幕中心识别
+	 * + 暂时不支持
+	 */
+	ScancodeConfig.centerBarcode = config.centerBarcode ?? true;
+	/**
+	 * 点击返回按钮是否关闭扫一扫界面
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.backFinish = config.backFinish ?? true;
+	/**
+	 * 点击取消按钮是否关闭扫一扫界面
+	 * + 默认为 `false`
+	 */
+	ScancodeConfig.cancelFinish = config.cancelFinish ?? false;
+	/**
+	 * 识别到二维码时是否显示蒙层，建议开启，这样能突出显示二维码上面的圆圈标记
+	 * + 默认为 `true`
+	 */
+	ScancodeConfig.showMask = config.showMask ?? true;
+	/**
+	 * 识别到二维码时蒙层颜色
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `#80000000`
+	 */
+	ScancodeConfig.maskColor = config.maskColor ?? '#80000000';
+	/**
+	 * 识别到二维码时蒙层透明度
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `0.5`
+	 */
+	ScancodeConfig.maskAlpha = (config.maskAlpha ?? 0.5).toFloat();
+	/**
+	 * 识别到二维码时显示蒙层的过渡动画时长，单位毫秒
+	 * + `showMask` 为 `true` 时生效
+	 * + 默认为 `300`
+	 */
+	ScancodeConfig.maskDuration = (config.maskDuration ?? 300).toLong();
+	/**
+	 * 识别到二维码后成功回调前的自定义处理
+	 */
+	ScancodeConfig.beforeSuccess = null;
+	if (config.beforeSuccess != null) {
+		const beforeSuccess = config.beforeSuccess;
+		ScancodeConfig.beforeSuccess = (callback: ResponseStateConfig) => {
+			beforeSuccess?.invoke(callback as CommonResultCallback);
+		};
+	}
+	/**
+	 * 识别到二维码后成功回调
+	 */
+	ScancodeConfig.onSuccess = null;
+	if (config.success != null) {
+		const success = config.success;
+		ScancodeConfig.onSuccess = (res: ResponseStateConfig) => {
+			console.log(res);
+			let response = {
+				statusCode: 200,
+				message: '扫码识别成功',
+				data: [] as SingleQRCodeData[]
+			} as SuccessCallback;
+			
+			let qrCodeData: SingleQRCodeData[] = [];
+			
+			(res.data as ArrayList<QRCodeData>).forEach((item: QRCodeData) => {
+				// 判断结果类型
+				if (item instanceof QRCodeData.Text) {
+					qrCodeData.push({
+						type: 'text',
+						data: {
+							text: `${item.text}`
+						} as TypeText
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Url) {
+					qrCodeData.push({
+						type: 'url',
+						data: {
+							url: `${item.url}`
+						} as TypeURL
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Wifi) {
+					qrCodeData.push({
+						type: 'wifi',
+						data: {
+							ssid: `${item.ssid}`,
+							password: `${item.password}`,
+							type: `${item.type}`
+						} as TypeWIFI
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Phone) {
+					qrCodeData.push({
+						type: 'phone',
+						data: {
+							number: `${item.number}`
+						} as TypePhone
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Sms) {
+					qrCodeData.push({
+						type: 'sms',
+						data: {
+							number: `${item.number}`,
+							message: `${item.message}`
+						} as TypeSms
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Email) {
+					qrCodeData.push({
+						type: 'email',
+						data: {
+							address: `${item.address}`,
+							subject: `${item.subject}`,
+							body: `${item.body}`
+						} as TypeEmail
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Contact) {
+					qrCodeData.push({
+						type: 'contact',
+						data: {
+							name: `${item.name}`,
+							address: `${item.address}`,
+							phone: `${item.phone}`,
+							email: `${item.email}`
+						} as TypeContact
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Geo) {
+					qrCodeData.push({
+						type: 'geo',
+						data: {
+							latitude: `${item.latitude}`,
+							longitude: `${item.longitude}`
+						} as TypeGeo
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Calendar) {
+					qrCodeData.push({
+						type: 'calendar',
+						data: {
+							summary: `${item.summary}`,
+							location: `${item.location}`,
+							description: `${item.description}`,
+							start: `${item.start}`,
+							end: `${item.end}`
+						} as TypeCalendar
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.DriverLicense) {
+					qrCodeData.push({
+						type: 'driverLicense',
+						data: {
+							firstName: `${item.firstName}`,
+							lastName: `${item.lastName}`,
+							middleName: `${item.middleName}`,
+							addressState: `${item.addressState}`,
+							addressCity: `${item.addressCity}`,
+							addressStreet: `${item.addressStreet}`,
+							addressZip: `${item.addressZip}`,
+							birthDate: `${item.birthDate}`,
+							documentType: `${item.documentType}`,
+							expiryDate: `${item.documentType}`,
+							gender: `${item.gender}`,
+							issueDate: `${item.issueDate}`,
+							licenseNumber: `${item.licenseNumber}`,
+							issuingCountry: `${item.issuingCountry}`
+						} as TypeDriverLicense
+					} as SingleQRCodeData);
+				}
+			})
+			
+			response.data = qrCodeData;
+			
+			success?.invoke(response);
+			
+			// 判断是否自动关闭
+			if (config.successFinish != null && config.successFinish === true) {
+				(UTSAndroid.getUniActivity() as BarcodeScanningActivity).close();
+			}
+		}
+	}
+	/**
+	 * 识别到二维码后失败回调
+	 */
+	ScancodeConfig.onFailure = null;
+	if (config.fail != null) {
+		const failure = config.fail;
+		ScancodeConfig.onFailure = (callback: ResponseStateConfig) => {
+			let response = {
+				statusCode: 500,
+				message: '扫码识别失败',
+				data: callback.data
+			} as CommonResultCallback;
+			failure?.invoke(response);
+		};
+	}
+	/**
+	 * 识别到二维码后完成回调
+	 */
+	ScancodeConfig.onComplete = null;
+	if (config.complete != null) {
+		const complete = config.complete;
+		ScancodeConfig.onComplete = (callback: ResponseStateConfig) => {
+			let response = {
+				statusCode: 200,
+				message: '扫码识别完成',
+				data: callback.data
+			} as CommonResultCallback;
+			
+			complete?.invoke(response);
+		};
+	}
+	// /**
+	//  * 识别到二维码后执行取消回调前的自定义处理
+	//  * + 暂不支持
+	//  */
+	// ScancodeConfig.beforeCancel = null;
+	// if (config.beforeCancel != null) {
+	// 	const beforeCancel = config.beforeCancel;
+	// 	ScancodeConfig.beforeCancel = () => {
+	// 		beforeCancel?.invoke();
+	// 	};
+	// }
+	/**
+	 * 识别到二维码后点击取消回调
+	 */
+	ScancodeConfig.onCancel = null;
+	if (config.onCancel != null) {
+		const onCancel = config.onCancel;
+		ScancodeConfig.onCancel = () => {
+			onCancel?.invoke();
+		};
+	}
+	/**
+	 * 识别到二维码后点击返回回调
+	 */
+	ScancodeConfig.onBack = null;
+	if (config.onBack != null) {
+		const onBack = config.onBack;
+		ScancodeConfig.onBack = () => {
+			onBack?.invoke();
+		};
+	}
+	/**
+	 * 识别到二维码后点击相册回调
+	 */
+	ScancodeConfig.onAlbum = null;
+	if (config.onAlbum != null) {
+		const onAlbum = config.onAlbum;
+		ScancodeConfig.onAlbum = () => {
+			onAlbum?.invoke();
+		};
+	}
+	/**
+	 * 识别到二维码后打开闪光灯回调
+	 */
+	ScancodeConfig.onFlashOn = null;
+	if (config.onFlashOn != null) {
+		const onFlashOn = config.onFlashOn;
+		ScancodeConfig.onFlashOn = () => {
+			onFlashOn?.invoke();
+		};
+	}
+	/**
+	 * 识别到二维码后关闭闪光灯回调
+	 */
+	ScancodeConfig.onFlashOff = null;
+	if (config.onFlashOff != null) {
+		const onFlashOff = config.onFlashOff;
+		ScancodeConfig.onFlashOff = () => {
+			onFlashOff?.invoke();
+		};
+	}
+	/**
+	 * 识别到二维码后手势缩放回调
+	 * @param {number} currentZoomRatio 当前焦距
+	 */
+	ScancodeConfig.onZoom = null;
+	if (config.onZoom != null) {
+		const onZoom = config.onZoom;
+		ScancodeConfig.onZoom = (currentZoomRatio: number) => {
+			onZoom?.invoke(currentZoomRatio);
+		};
+	}
+	/**
+	 * 识别到二维码后执行双击缩放回调
+	 * @param {number} currentZoomRatio 当前焦距
+	 */
+	ScancodeConfig.onDoubleTap = null;
+	if (config.onDoubleTap != null) {
+		const onDoubleTap = config.onDoubleTap;
+		ScancodeConfig.onDoubleTap = (currentZoomRatio: number) => {
+			onDoubleTap?.invoke(currentZoomRatio);
+		};
+	}
+	/**
+	 * 识别到二维码后连续扫码回调
+	 */
+	ScancodeConfig.onContinuous = null;
+	if (config.onContinuous != null) {
+		const onContinuous = config.onContinuous;
+		ScancodeConfig.onContinuous = (res: ResponseStateConfig) => {
+			let response = {
+				statusCode: 200,
+				message: '扫码识别成功',
+				data: [] as SingleQRCodeData[]
+			} as SuccessCallback;
+			
+			let qrCodeData: SingleQRCodeData[] = [];
+			
+			(res.data as ArrayList<QRCodeData>).forEach((item: QRCodeData) => {
+				// 判断结果类型
+				if (item instanceof QRCodeData.Text) {
+					qrCodeData.push({
+						type: 'text',
+						data: {
+							text: `${item.text}`
+						} as TypeText
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Url) {
+					qrCodeData.push({
+						type: 'url',
+						data: {
+							url: `${item.url}`
+						} as TypeURL
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Wifi) {
+					qrCodeData.push({
+						type: 'wifi',
+						data: {
+							ssid: `${item.ssid}`,
+							password: `${item.password}`,
+							type: `${item.type}`
+						} as TypeWIFI
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Phone) {
+					qrCodeData.push({
+						type: 'phone',
+						data: {
+							number: `${item.number}`
+						} as TypePhone
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Sms) {
+					qrCodeData.push({
+						type: 'sms',
+						data: {
+							number: `${item.number}`,
+							message: `${item.message}`
+						} as TypeSms
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Email) {
+					qrCodeData.push({
+						type: 'email',
+						data: {
+							address: `${item.address}`,
+							subject: `${item.subject}`,
+							body: `${item.body}`
+						} as TypeEmail
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Contact) {
+					qrCodeData.push({
+						type: 'contact',
+						data: {
+							name: `${item.name}`,
+							address: `${item.address}`,
+							phone: `${item.phone}`,
+							email: `${item.email}`
+						} as TypeContact
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Geo) {
+					qrCodeData.push({
+						type: 'geo',
+						data: {
+							latitude: `${item.latitude}`,
+							longitude: `${item.longitude}`
+						} as TypeGeo
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.Calendar) {
+					qrCodeData.push({
+						type: 'calendar',
+						data: {
+							summary: `${item.summary}`,
+							location: `${item.location}`,
+							description: `${item.description}`,
+							start: `${item.start}`,
+							end: `${item.end}`
+						} as TypeCalendar
+					} as SingleQRCodeData);
+				}
+				if (item instanceof QRCodeData.DriverLicense) {
+					qrCodeData.push({
+						type: 'driverLicense',
+						data: {
+							firstName: `${item.firstName}`,
+							lastName: `${item.lastName}`,
+							middleName: `${item.middleName}`,
+							addressState: `${item.addressState}`,
+							addressCity: `${item.addressCity}`,
+							addressStreet: `${item.addressStreet}`,
+							addressZip: `${item.addressZip}`,
+							birthDate: `${item.birthDate}`,
+							documentType: `${item.documentType}`,
+							expiryDate: `${item.documentType}`,
+							gender: `${item.gender}`,
+							issueDate: `${item.issueDate}`,
+							licenseNumber: `${item.licenseNumber}`,
+							issuingCountry: `${item.issuingCountry}`
+						} as TypeDriverLicense
+					} as SingleQRCodeData);
+				}
+			})
+			
+			response.data = qrCodeData;
+			
+			onContinuous?.invoke(response);
+		};
+	}
+	/**
+	 * 点击单个二维码的回调
+	 */
+	ScancodeConfig.onBarcode = null;
+	if (config.onBarcode != null) {
+		const onBarcode = config.onBarcode;
+		ScancodeConfig.onBarcode = (res: ResponseStateConfig) => {
+			let response = {
+				statusCode: 200,
+				message: '扫码识别成功',
+				data: {
+					type: 'text',
+					data: {}
+				}
+			} as OnBarcodeCallback;
+			
+			const item = res.data as QRCodeData;
+			
+			// 判断结果类型
+			if (item instanceof QRCodeData.Text) {
+				response.data.type = 'text';
+				// response.data.data = {
+				// 	type: 'text',
+				// 	data: {
+				// 		text: `${item.text}`
+				// 	} as TypeText
+				// } as SingleQRCodeData;
+				response.data.data = {
+					text: `${item.text}`
+				} as TypeText;
+			}
+			if (item instanceof QRCodeData.Url) {
+				response.data.type = 'url';
+				// response.data.data = {
+				// 	type: 'url',
+				// 	data: {
+				// 		url: `${item.url}`
+				// 	} as TypeURL
+				// } as SingleQRCodeData;
+				response.data.data = {
+					url: `${item.url}`
+				} as TypeURL;
+			}
+			if (item instanceof QRCodeData.Wifi) {
+				response.data.type = 'wifi';
+				// response.data.data = {
+				// 	type: 'wifi',
+				// 	data: {
+				// 		ssid: `${item.ssid}`,
+				// 		password: `${item.password}`,
+				// 		type: `${item.type}`
+				// 	} as TypeWIFI
+				// } as SingleQRCodeData;
+				response.data.data = {
+					ssid: `${item.ssid}`,
+					password: `${item.password}`,
+					type: `${item.type}`
+				} as TypeWIFI;
+			}
+			if (item instanceof QRCodeData.Phone) {
+				response.data.type = 'phone';
+				// response.data.data = {
+				// 	type: 'phone',
+				// 	data: {
+				// 		number: `${item.number}`
+				// 	} as TypePhone
+				// } as SingleQRCodeData;
+				response.data.data = {
+					number: `${item.number}`
+				} as TypePhone;
+			}
+			if (item instanceof QRCodeData.Sms) {
+				response.data.type = 'sms';
+				// response.data.data = {
+				// 	type: 'sms',
+				// 	data: {
+				// 		number: `${item.number}`,
+				// 		message: `${item.message}`
+				// 	} as TypeSms
+				// } as SingleQRCodeData;
+				response.data.data = {
+					number: `${item.number}`,
+					message: `${item.message}`
+				} as TypeSms;
+			}
+			if (item instanceof QRCodeData.Email) {
+				response.data.type = 'email';
+				// response.data.data = {
+				// 	type: 'email',
+				// 	data: {
+				// 		address: `${item.address}`,
+				// 		subject: `${item.subject}`,
+				// 		body: `${item.body}`
+				// 	} as TypeEmail
+				// } as SingleQRCodeData;
+				response.data.data = {
+					address: `${item.address}`,
+					subject: `${item.subject}`,
+					body: `${item.body}`
+				} as TypeEmail;
+			}
+			if (item instanceof QRCodeData.Contact) {
+				response.data.type = 'contact';
+				// response.data.data = {
+				// 	type: 'contact',
+				// 	data: {
+				// 		name: `${item.name}`,
+				// 		address: `${item.address}`,
+				// 		phone: `${item.phone}`,
+				// 		email: `${item.email}`
+				// 	} as TypeContact
+				// } as SingleQRCodeData;
+				response.data.data = {
+					name: `${item.name}`,
+					address: `${item.address}`,
+					phone: `${item.phone}`,
+					email: `${item.email}`
+				} as TypeContact;
+			}
+			if (item instanceof QRCodeData.Geo) {
+				response.data.type = 'geo';
+				// response.data.data = {
+				// 	type: 'geo',
+				// 	data: {
+				// 		latitude: `${item.latitude}`,
+				// 		longitude: `${item.longitude}`
+				// 	} as TypeGeo
+				// } as SingleQRCodeData;
+				response.data.data = {
+					latitude: `${item.latitude}`,
+					longitude: `${item.longitude}`
+				} as TypeGeo;
+			}
+			if (item instanceof QRCodeData.Calendar) {
+				response.data.type = 'calendar';
+				// response.data.data = {
+				// 	type: 'calendar',
+				// 	data: {
+				// 		summary: `${item.summary}`,
+				// 		location: `${item.location}`,
+				// 		description: `${item.description}`,
+				// 		start: `${item.start}`,
+				// 		end: `${item.end}`
+				// 	} as TypeCalendar
+				// } as SingleQRCodeData;
+				response.data.data = {
+					summary: `${item.summary}`,
+					location: `${item.location}`,
+					description: `${item.description}`,
+					start: `${item.start}`,
+					end: `${item.end}`
+				} as TypeCalendar;
+			}
+			if (item instanceof QRCodeData.DriverLicense) {
+				response.data.type = 'driverLicense';
+				// response.data.data = {
+				// 	type: 'driverLicense',
+				// 	data: {
+				// 		firstName: `${item.firstName}`,
+				// 		lastName: `${item.lastName}`,
+				// 		middleName: `${item.middleName}`,
+				// 		addressState: `${item.addressState}`,
+				// 		addressCity: `${item.addressCity}`,
+				// 		addressStreet: `${item.addressStreet}`,
+				// 		addressZip: `${item.addressZip}`,
+				// 		birthDate: `${item.birthDate}`,
+				// 		documentType: `${item.documentType}`,
+				// 		expiryDate: `${item.documentType}`,
+				// 		gender: `${item.gender}`,
+				// 		issueDate: `${item.issueDate}`,
+				// 		licenseNumber: `${item.licenseNumber}`,
+				// 		issuingCountry: `${item.issuingCountry}`
+				// 	} as TypeDriverLicense
+				// } as SingleQRCodeData;
+				response.data.data = {
+					firstName: `${item.firstName}`,
+					lastName: `${item.lastName}`,
+					middleName: `${item.middleName}`,
+					addressState: `${item.addressState}`,
+					addressCity: `${item.addressCity}`,
+					addressStreet: `${item.addressStreet}`,
+					addressZip: `${item.addressZip}`,
+					birthDate: `${item.birthDate}`,
+					documentType: `${item.documentType}`,
+					expiryDate: `${item.documentType}`,
+					gender: `${item.gender}`,
+					issueDate: `${item.issueDate}`,
+					licenseNumber: `${item.licenseNumber}`,
+					issuingCountry: `${item.issuingCountry}`
+				} as TypeDriverLicense;
+			}
+			
+			onBarcode?.invoke(response);
+		}
+	}
+	/**
+	 * 用户拒绝相机权限时的回调
+	 */
+	ScancodeConfig.onCameraPermissionDenied = null;
+	if (config.onCameraPermissionDenied != null) {
+		const onCameraPermissionDenied = config.onCameraPermissionDenied;
+		ScancodeConfig.onCameraPermissionDenied = () => {
+			onCameraPermissionDenied?.invoke();
+		};
+	}
+	/**
+	 * 用户拒绝相册权限时的回调
+	 */
+	ScancodeConfig.onAlbumPermissionDenied = null;
+	if (config.onAlbumPermissionDenied != null) {
+		const onAlbumPermissionDenied = config.onAlbumPermissionDenied;
+		ScancodeConfig.onAlbumPermissionDenied = () => {
+			onAlbumPermissionDenied?.invoke();
+		};
+	}
+}

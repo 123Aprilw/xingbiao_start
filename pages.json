@@ -1,0 +1,90 @@
+{
+	"pages": [{
+			"path": "pages/index/index"
+		}, {
+			"path": "pages/TabBar/punch/punch"
+		},
+		{
+			"path": "pages/TabBar/user/user"
+		},
+		{
+			"path": "pages/TabBar/home/home"
+		},
+		{
+			"path": "pages/BooksDetail/Books"
+		},
+		{
+			"path": "pages/DetailType/Listen/Listen"
+		},
+		{
+			"path": "pages/member/member"
+		},
+		{
+			"path": "pages/Bones/Bones"
+		},
+		{
+			"path": "pages/DetailType/lock/lock"
+		},
+		{
+			"path": "pages/DetailType/ThougthPicture/ThougthPicture"
+		},
+		{
+			"path": "pages/DetailType/Translation/Translation"
+		},
+		{
+			"path": "pages/DetailType/Matching/Matching"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/Serum_Report"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/Reading_Record"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/Picture_collection"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/RazBook"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/LevelTable"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/WeChart"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/MemberRedemption"
+		},
+		{
+			"path": "pages/Cefr/Cefr"
+		},
+		{
+			"path": "pages/TabBar/user/userDetail/Setting"
+		}, {
+			"path": "pages/webview/webview"
+		},
+		{
+			"path": "pages/DetailType/Test/Test"
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationStyle": "custom",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"custom": true,
+		"list": [{
+				"pagePath": "pages/TabBar/home/home"
+			},
+			{
+				"pagePath": "pages/TabBar/punch/punch"
+			},
+			{
+				"pagePath": "pages/TabBar/user/user"
+			}
+		]
+	},
+	"uniIdRouter": {}
+}

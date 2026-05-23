@@ -1,0 +1,98 @@
+import { ScanCodeConfig } from "../interface";
+import { configInit } from "./configInit";
+import Intent from 'android.content.Intent';
+import BarcodeScanningActivity from 'cn.kviewui.scancode.BarcodeScanningActivity';
+import ScancodeConfig from 'cn.kviewui.scancode.ScancodeConfig';
+
+export class ScanCodeManager {
+	private _config: ScanCodeConfig;
+	private _instance: BarcodeScanningActivity | null;
+	
+	constructor (config: ScanCodeConfig = {} as ScanCodeConfig) {
+		this._config = config;
+		this._instance = new BarcodeScanningActivity();
+	}
+	
+	/**
+	 * 获取实例
+	 */
+	getInstance(): BarcodeScanningActivity {
+		this._instance = new BarcodeScanningActivity();
+		return this._instance!;
+	}
+	
+	/**
+	 * 开始扫码
+	 */
+	scanCode() {
+		const intent = new Intent(UTSAndroid.getUniActivity()!, BarcodeScanningActivity().javaClass);
+		// 获取扫码界面实例
+		// this.getInstance();
+		
+		// 扫码实例配置
+		configInit(this._config);
+		
+		this._instance!.setConfig(ScancodeConfig);
+		
+		// 打开activity
+		UTSAndroid.getUniActivity()!.startActivity(intent);
+	}
+	
+	/**
+	 * 手动发起相机权限请求
+	 */
+	selfRequestCameraPermission() {
+		// this._instance!.selfRequestCameraPermission();
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).selfRequestCameraPermission();
+	}
+	
+	/**
+	 * 手动发起读取相册权限请求
+	 */
+	selfRequestReadMediaImagesPermission() {
+		// this._instance!.selfRequestReadMediaImagesPermission();
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).selfRequestReadMediaImagesPermission();
+	}
+	
+	/**
+	 * 打开相册
+	 */
+	openAlbum() {
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).openAlbum();
+	}
+	
+	/**
+	 * 重新扫码
+	 */
+	restartScan() {
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).restartScan();
+	}
+	
+	/**
+	 * 关闭扫一扫界面
+	 */
+	close() {
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).close();
+	}
+	
+	/**
+	 * 设置界面配置
+	 */
+	config(config: ScanCodeConfig = {} as ScanCodeConfig) {
+		this._config = config;
+	}
+	
+	/**
+	 * 打开闪光灯
+	 */
+	turnOnFlashlight() {
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).turnOnFlashlight();
+	}
+	
+	/**
+	 * 关闭闪光灯
+	 */
+	turnOffFlashlight() {
+		(UTSAndroid.getUniActivity() as BarcodeScanningActivity).turnOffFlashlight();
+	}
+}

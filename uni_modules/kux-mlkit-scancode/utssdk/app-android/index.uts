@@ -1,0 +1,27 @@
+import Intent from 'android.content.Intent';
+import BarcodeScanningActivity from 'cn.kviewui.scancode.BarcodeScanningActivity';
+import ScancodeConfig from 'cn.kviewui.scancode.ScancodeConfig';
+import ResponseStateConfig from 'cn.kviewui.scancode.ResponseStateConfig';
+import QRCodeData from 'cn.kviewui.scancode.QRCodeData';
+import ArrayList from 'java.util.ArrayList';
+import { ScanCodeConfig } from '../interface';
+import { configInit } from './configInit';
+import { ScanCodeManager } from './scanCodeManager';
+
+export function scanCode (config: ScanCodeConfig = {} as ScanCodeConfig) {
+	const intent = new Intent(UTSAndroid.getUniActivity()!, BarcodeScanningActivity().javaClass);
+	// 获取扫码界面实例
+	const activityInstance = new BarcodeScanningActivity();
+	
+	console.log(config);
+	
+	// 扫码实例配置
+	configInit(config);
+	
+	activityInstance.setConfig(ScancodeConfig);
+	UTSAndroid.getUniActivity()!.startActivity(intent);
+}
+
+export function useScanCode (config: ScanCodeConfig = {} as ScanCodeConfig): ScanCodeManager {
+	return new ScanCodeManager(config);
+}
