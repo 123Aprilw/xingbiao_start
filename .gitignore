@@ -3,12 +3,9 @@ unpackage/
 .hbuilderx/
 .DS_Store
 manifest.json
-utils/request.js
 # 环境变量配置文件（避免泄露密钥）
-.env
-.env.local
-.env.*.local
-
+env.*.js
+config.js
 # 日志文件
 *.log
 npm-debug.log*

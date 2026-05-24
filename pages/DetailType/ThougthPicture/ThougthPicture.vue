@@ -4,7 +4,7 @@
 	import { LookPicture, PostLookPicture } from '@/utils/api.ts'
 	import { playTTS } from '@/utils/tts.ts'
 	import Loading from '@/components/Status/Status.vue'
-
+	import config from '../../../config.js'
 	interface Question {
 		id : number
 		title_image : string
@@ -25,7 +25,7 @@
 	const currentIndex = ref(0)
 	const wrongCurrentIndex = ref(0)
 	const correctInRedo = ref(0)
-	const BASE_URL = 'https://xingbiao.demo.zhongti-group.com'
+	const BASE_URL = config.BASE_API
 	let isProps = ref({ show: false, status: 0, name: '' })
 	let selectedIndex = ref<number>(-1)
 	let SwiperData = ref<ApiResponse>({ count: 0, list: [], quiz_token: '' })

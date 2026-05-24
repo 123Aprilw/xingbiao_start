@@ -1,5 +1,6 @@
 // utils/request.js
-const BASE_URL = 'https://xingbiao.demo.zhongti-group.com'
+import config from "../config.js";
+const BASE_URL = config.BASE_API
 const TIMEOUT = 10000
 
 const request = (options) => {

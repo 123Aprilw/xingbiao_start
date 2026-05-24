@@ -62,7 +62,7 @@
 	import Loading from '@/components/Status/Status.vue'
 	import { LookWorld, PostLookWorld } from '@/utils/api.ts'
 	import { playTTS, stopTTS, destroyTTS } from '@/utils/tts.ts'
-	//
+	import config from '../../../config.js'
 	const GLOBAL_KEY = "LEARN_STATUS_FINISHED"
 	let lever_list = ref<string>('')
 	const BooksId = ref<number>(0)
@@ -74,7 +74,7 @@
 	const wrongCurrentIndex = ref(0)
 	const correctInRedo = ref(0)
 	const BonesId = ref<string>('')
-	const BASE_URL = 'https://xingbiao.demo.zhongti-group.com'
+	const BASE_URL = config.BASE_API
 	let isProps = ref({ show: false, status: 0, name: '' })
 	let selectedIndex = ref<number>(-1)
 	let SwiperData = ref<ApiTs>({ count: 0, list: [], quiz_token: '' })

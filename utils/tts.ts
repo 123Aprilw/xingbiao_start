@@ -1,6 +1,6 @@
 // 引入你封装好的接口
 import { XtfsTts } from './api'
-
+import config from '../config.js'
 // 全局音频实例（单例，避免多音频同时播放）
 let audio : UniApp.InnerAudioContext | null = null
 let isPlaying = false
@@ -66,7 +66,7 @@ export async function playTTS(
 		}
 
 		// 拼接完整音频 URL
-		const baseUrl = 'https://xingbiao.demo.zhongti-group.com'
+		const baseUrl = config.BASE_API
 		audio!.src = baseUrl + audioPath
 
 		// 开始播放
