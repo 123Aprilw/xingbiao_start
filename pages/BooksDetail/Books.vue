@@ -44,7 +44,6 @@
 		try {
 			const res = await GoDetailData(String(id), 'app')
 			Data.value = res.data
-			console.log(Data.value)
 		} catch (err) {
 			console.log(err)
 		}
@@ -105,9 +104,13 @@
 					url: `/pages/DetailType/Translation/Translation?id=${Data.value.id}&type=${item.type}&lever=${leverList.value}`
 				})
 			} else if (item.id === 7) {
-
+				uni.navigateTo({
+					url: `/pages/DetailType/Matching/Matching?id=${Data.value.id}&type=${item.type}&lever=${leverList.value}`
+				})
 			} else if (item.id === 8) {
-
+				uni.navigateTo({
+					url: `/pages/DetailType/Test/Test?id=${Data.value.id}&type=${item.type}&lever=${leverList.value}`
+				})
 			}
 		} catch (err) {
 			console.log(err)
@@ -118,8 +121,6 @@
 	const loadTaskFinishStatus = () => {
 		if (!Data.value) return
 		const bookId = Data.value.id
-		// 一一对应8个任务存储key
-		console.log(bookId)
 		const keyMap : Record<number, string> = {
 			1: `listen_finished_${bookId}`,
 			2: `word_finished_${bookId}`,
@@ -135,15 +136,12 @@
 			console.log(section)
 			section.Card_Arr.forEach(item => {
 				const key = keyMap[item.id]
-				console.log('生成的key:', key)
 				if (key) {
 					const stored = uni.getStorageSync(key)
-					console.log('读取到的stored:', stored)
 					const isFinished = typeof stored === 'object' && stored?.type === 'boolean'
 						? stored.data
 						: !!stored
 					taskFinishStatus.value[item.id] = isFinished
-					console.log('状态读取结果:', isFinished)
 				} else {
 					taskFinishStatus.value[item.id] = false
 				}
@@ -151,6 +149,7 @@
 		})
 	}
 	onLoad((e) => {
+		console.log(e)
 		leverList.value = e.lever
 		BooksId.value = Number(e.id)
 		FetchApply(e.id).then(() => {
@@ -192,6 +191,7 @@
 			<view class="box_content" v-for="item in BoxContent" :key="item.id">
 				<text>{{item.title}}</text>
 				<view class="main_box">
+					<!-- //v-if="!(card.id === 8 && leverList === 'aa')" -->
 					<template v-for="card in item.Card_Arr" :key="card.id">
 						<view class="small_box" @click="goListen(card)">
 							<view class="small_left">

@@ -43,6 +43,7 @@
 	let ApiData = ref<SwiperTs>()
 	let FontSize = ref<string>('')
 	let showChinese = ref(false)
+	let lever_List = ref<string>('')
 	const listenedIds = ref<number[]>([])
 	const currentBookItemId = ref<number | null>(null)
 	const convertSpeed = (uiSpeed : number) : number => {
@@ -121,7 +122,7 @@
 					setTimeout(() => {
 						stopTTS()
 						uni.navigateTo({
-							url: `/pages/Bones/Bones?id=${BackId.value}`
+							url: `/pages/Bones/Bones?id=${BackId.value}&lever=${lever_List.value}`
 						})
 					}, 500)
 					return
@@ -151,7 +152,7 @@
 						setTimeout(() => {
 							stopTTS()
 							uni.navigateTo({
-								url: `/pages/Bones/Bones?id=${BackId.value}`
+								url: `/pages/Bones/Bones?id=${BackId.value}&lever=${lever_List.value}`
 							})
 						}, 500)
 						return
@@ -177,7 +178,7 @@
 					setTimeout(() => {
 						stopTTS()
 						uni.navigateTo({
-							url: `/pages/Bones/Bones?id=${BackId.value}`
+							url: `/pages/Bones/Bones?id=${BackId.value}&lever=${lever_List.value}`
 						})
 					}, 500)
 					return
@@ -286,7 +287,7 @@
 	const back = () => {
 		stop()
 		uni.navigateTo({
-			url: `/pages/BooksDetail/Books?id=${BackId.value}`
+			url: `/pages/BooksDetail/Books?id=${BackId.value}&lever=${lever_List.value}`
 		})
 	}
 	const showModel = () => {
@@ -347,6 +348,7 @@
 	})
 
 	onLoad(async (e) => {
+		lever_List.value = e.lever
 		BonesId.value = Number(e.type)
 		BackId.value = String(e.id)
 		//1=普通听 2=单词 3=绘本听

@@ -26,7 +26,7 @@
 	const redoIndex = ref(0)
 	const originalTotal = ref(0)
 	const quizToken = ref('')
-
+	let lever_list = ref<string>('')
 	let IndexCurrent = ref<number>(0)
 	let BonesId = ref<number>(0)
 	let Typeis = ref<number>(0)
@@ -79,12 +79,13 @@
 	const submitResult = async () => {
 		if (!quizToken.value) return
 		try {
-			await PostWorldPoplur(
+			const res = await PostWorldPoplur(
 				quizToken.value,
 				BonesId.value.toString(),
 				wrongQuestions.value,
 				'app'
 			)
+			console.log(res)
 		} catch (err) {
 			console.error('提交失败', err)
 		}
@@ -101,7 +102,7 @@
 				wrongQuestions.value.length > 0
 					? (pageStatus.value = 'review')
 					: (await submitResult(), uni.navigateTo({
-						url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}`
+						url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}&lever=${lever_list.value}`
 					}))
 			}
 			return
@@ -114,7 +115,7 @@
 			} else {
 				await submitResult()
 				uni.navigateTo({
-					url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}`
+					url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}&lever=${lever_list.value}`
 				})
 			}
 		}
@@ -123,7 +124,7 @@
 	const startRedo = () => {
 		if (wrongQuestions.value.length === 0) {
 			submitResult()
-			uni.navigateTo({ url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}` })
+			uni.navigateTo({ url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}&lever=${lever_list.value}` })
 			return
 		}
 		pageStatus.value = 'redoing'

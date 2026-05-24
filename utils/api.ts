@@ -99,6 +99,7 @@ export const PostReadBookData = (bookId : string, listenId : string, audioUrl : 
 		source: Source
 	})
 }
+
 // ====================
 // 【独立】音频上传专用接口
 // ====================
@@ -162,6 +163,32 @@ export const LookWorldPoplur = (bookId : string, Source : string) => {
 //看词翻译提交
 export const PostWorldPoplur = (quizToken : string, bookId : string, errorIds : number[], Source : string) => {
 	return post('/api/v1/book/translate_submit', {
+		quiz_token: quizToken,
+		book_id: bookId,
+		error_ids: errorIds,
+		source: Source
+	})
+}
+//中英文配对
+export const ChineseEnglishPoplur = (bookId : string, Source : string) => {
+	return get(`/api/v1/book/match?book_id=${bookId}&source=${Source}`)
+}
+//提交中英文配对
+export const PostChineseEnglishPoplur = (quizToken : string, bookId : string, errorIds : number[], Source : string) => {
+	return post('/api/v1/book/match_submit', {
+		match_token: quizToken,
+		book_id: bookId,
+		match_ids: errorIds,
+		source: Source
+	})
+}
+//绘本测验
+export const GetTestData = (bookId : string, Source : string) => {
+	return get(`/api/v1/book/quiz?book_id=${bookId}&source=${Source}`)
+}
+//绘本测验提交
+export const PostTestPoplur = (quizToken : string, bookId : string, errorIds : number[], Source : string) => {
+	return post('/api/v1/book/quiz_submit', {
 		quiz_token: quizToken,
 		book_id: bookId,
 		error_ids: errorIds,

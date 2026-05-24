@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>单词学习 - 英语学习</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        background-color: #f7f8fa;
+        color: #333;
+      }
+
+      .page-container {
+        max-width: 750px;
+        margin: 0 auto;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 16px;
+        background: #fff;
+        border-bottom: 1px solid #eee;
+      }
+
+      .header-back {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+
+      .header-back svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .header-title {
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .listen {
+        flex: 1;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .back-top {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .p1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .text-back {
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+      }
+
+      .text-back img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .imge {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .cinese,
+      .seting {
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+      }
+
+      .cinese img,
+      .seting img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .proess {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .progress-bar {
+        width: 85%;
+        height: 22px;
+        background-color: #f0f0f0;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background-color: #fada40;
+        border-radius: 20px;
+        transition: width 0.3s ease;
+      }
+
+      .proess text {
+        font-size: 14px;
+        color: #666;
+      }
+
+      .swiper {
+        flex: 1;
+      }
+
+      .swiper-box {
+        border-radius: 25px;
+        padding: 20px;
+        min-height: 500px;
+        box-shadow: 0 2px 14px rgba(120, 120, 120, 0.1);
+      }
+
+      .swiper-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .imgs_text {
+        width: 100%;
+        height: 240px;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .imgs_text img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .text_area {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .text_area text {
+        font-weight: 400;
+        color: #000;
+        line-height: 1.5;
+      }
+
+      .wold_chinese {
+        width: 168px;
+        height: 60px;
+        box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+        background: rgba(255, 255, 255, 0.6);
+        padding: 12px 24px;
+        border-radius: 12px;
+      }
+
+      .main_world {
+        font-size: 14px;
+        color: #000;
+      }
+
+      .radio {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+        padding: 20px 0;
+      }
+
+      .start {
+        width: 70px;
+        height: 70px;
+        cursor: pointer;
+      }
+
+      .start img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .work {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 108px;
+        height: 36px;
+        adius: 12px;
+        border-radius: 24px;
+        background-color: #fada40;
+        cursor: pointer;
+      }
+
+      .work .lneg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .work img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .work text {
+        font-family: PingFang SC;
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 1);
+      }
+
+      /* 响应式 */
+      @media (max-width: 480px) {
+        .imgs_text {
+          height: 200px;
+        }
+
+        .swiper-box {
+          min-height: 420px;
+        }
+
+        .start {
+          width: 60px;
+          height: 60px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-container">
+      <div class="header">
+        <div class="header-back" onclick="goBack()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </div>
+        <div class="header-title">单词学习</div>
+        <div class="header-right"></div>
+      </div>
+
+      <div class="listen">
+        <div class="back-top">
+          <div class="proess">
+            <div class="progress-bar">
+              <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <text id="progressText">1/12</text>
+          </div>
+        </div>
+
+        <div class="swiper">
+          <div class="swiper-box">
+            <div class="swiper-item" id="wordCard">
+              <div class="imgs_text">
+                <img
+                  id="wordImg"
+                  src="https://picsum.photos/600/400"
+                  alt="单词图片"
+                />
+              </div>
+              <div class="text_area">
+                <text id="wordName" style="font-size: 18px">lake</text>
+                <text id="wordPhonetic">/leɪk/</text>
+                <text id="wordChinese" style="font-size: 30px; display: none"
+                  >湖，湖泊</text
+                >
+                <div class="wold_chinese">
+                  <div class="main_world" id="wordExample">例句</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="radio">
+          <div></div>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 35px;
+            "
+          >
+            <div class="start" onclick="startPlay()">
+              <img id="playImg" src="../imgs/ready.png" alt="播放" />
+            </div>
+
+            <div class="work" onclick="slowPlay()">
+              <div class="lneg">
+                <img src="../imgs/laba.png" alt="慢速" />
+              </div>
+              <text>慢速教学</text>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { playTTS, stopTTS } from '../utils/tts.js'
+
+      // ====================== 单词数据 ======================
+      const wordList = [
+        {
+          url: "https://picsum.photos/id/29/600/400",
+          name: "lake",
+          chinese: "湖，湖泊",
+          treeTiger: "/leɪk/",
+          Word: "I see a lake.",
+        },
+        {
+          url: "https://picsum.photos/id/46/600/400",
+          name: "fish",
+          chinese: "鱼",
+          treeTiger: "/fɪʃ/",
+          Word: "I see a fish.",
+        },
+        {
+          url: "https://picsum.photos/id/65/600/400",
+          name: "duck",
+          chinese: "鸭子",
+          treeTiger: "/dʌk/",
+          Word: "I see a duck.",
+        },
+        {
+          url: "https://picsum.photos/id/15/600/400",
+          name: "boat",
+          chinese: "船",
+          treeTiger: "/boʊt/",
+          Word: "I see a boat.",
+        },
+        {
+          url: "https://picsum.photos/id/12/600/400",
+          name: "tree",
+          chinese: "树",
+          treeTiger: "/triː/",
+          Word: "I see a tree.",
+        },
+      ];
+
+      // ====================== 全局状态 ======================
+      let currentIndex = 0;
+      let isPlaying = false;
+      let showChinese = false;
+
+      // ====================== 初始化 ======================
+      window.onload = function () {
+        renderWord();
+      };
+
+      // 渲染当前单词
+      function renderWord() {
+        const word = wordList[currentIndex];
+        document.getElementById("wordImg").src = word.url;
+        document.getElementById("wordName").innerText = word.name;
+        document.getElementById("wordPhonetic").innerText = word.treeTiger;
+        document.getElementById("wordChinese").innerText = word.chinese;
+        document.getElementById("wordExample").innerText = word.Word;
+
+        // 进度
+        document.getElementById("progressText").innerText =
+          `${currentIndex + 1}/${wordList.length}`;
+        document.getElementById("progressFill").style.width =
+          `${((currentIndex + 1) / wordList.length) * 100}%`;
+      }
+
+      // ====================== 讯飞 TTS 在线发音 ======================
+      async function speakText(text, isEnglish = true, speed = 1) {
+        // 停止当前发音
+        stopSpeak();
+
+        try {
+          isPlaying = true;
+          document.getElementById("playImg").src = "../imgs/end.png";
+
+          const lang = isEnglish ? 'en' : 'zh';
+          await playTTS(text, { lang, speed });
+
+          // 播放结束
+          isPlaying = false;
+          document.getElementById("playImg").src = "../imgs/ready.png";
+        } catch (err) {
+          isPlaying = false;
+          document.getElementById("playImg").src = "../imgs/ready.png";
+          console.error('播放失败', err);
+        }
+      }
+
+      // 停止发音
+      function stopSpeak() {
+        stopTTS();
+        isPlaying = false;
+        document.getElementById("playImg").src = "../imgs/ready.png";
+      }
+
+      // ====================== 播放当前单词 ======================
+      async function playCurrent(autoNext = true) {
+        if (isPlaying) return;
+        const word = wordList[currentIndex];
+
+        // 读英文
+        await speakText(word.name, true, 1);
+
+        // 读中文（如果开启）
+        if (showChinese && word.chinese) {
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          await speakText(word.chinese, false, 1);
+        }
+
+        // 自动下一个
+        if (autoNext) {
+          setTimeout(() => {
+            if (currentIndex < wordList.length - 1) {
+              currentIndex++;
+              renderWord();
+              playCurrent();
+            }
+          }, 500);
+        }
+      }
+
+      // 播放/暂停按钮
+      function startPlay() {
+        if (isPlaying) {
+          stopSpeak();
+        } else {
+          playCurrent(false);
+        }
+      }
+
+      // 慢速教学
+      function slowPlay() {
+        if (isPlaying) return;
+        const word = wordList[currentIndex];
+        stopSpeak();
+
+        setTimeout(async () => {
+          await speakText(word.name, true, 0.5);
+          if (showChinese && word.chinese) {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+            await speakText(word.chinese, false, 0.5);
+          }
+        }, 300);
+      }
+
+      // 切换中文显示
+      function toggleChinese() {
+        showChinese = !showChinese;
+        const el = document.getElementById("wordChinese");
+        const img = document.getElementById("langImg");
+
+        if (showChinese) {
+          el.style.display = "block";
+          img.src = "/static/YELLOW.png";
+        } else {
+          el.style.display = "none";
+          img.src = "/static/english.png";
+        }
+      }
+
+      // 返回
+      function goBack() {
+        stopSpeak();
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>

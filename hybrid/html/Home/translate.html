@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>看词翻译</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        min-height: 100vh;
+      }
+
+      .listen {
+        padding-top: 20px;
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 20px;
+      }
+
+      .back_top {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 0px 15px 10px;
+      }
+
+      .back_top .p1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .text_back {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      .text_back img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .proess {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .proess progress {
+        width: 85%;
+        height: 11px;
+        border-radius: 52px;
+        background-color: #fff;
+      }
+
+      .proess progress::-webkit-progress-bar {
+        background-color: #fff;
+        border-radius: 52px;
+      }
+
+      .proess progress::-webkit-progress-value {
+        background-color: rgba(250, 218, 64, 1);
+        border-radius: 52px;
+      }
+
+      .proess text {
+        font-size: 14px;
+        color: #000;
+      }
+
+      .swiper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 0 15px;
+      }
+
+      .swiper .top {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 0 0 10px;
+      }
+
+      .top_imgs {
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+      }
+
+      .top_imgs img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .swiper_box {
+        width: 100%;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .imgs_bottom {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+      }
+
+      .option-item {
+        background: #f9f9fb;
+        border-radius: 16px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: #000;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .option-item.active {
+        background: rgba(250, 218, 64, 1);
+      }
+
+      .Punctuator {
+        margin: 20px 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50px;
+        height: 60px;
+        background: #ccc;
+        font-size: 16px;
+        color: #000;
+        cursor: not-allowed;
+        transition: all 0.2s ease;
+      }
+
+      .Punctuator_active {
+        background: rgba(250, 218, 64, 1) !important;
+        cursor: pointer !important;
+      }
+
+      .error_box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 0 15px;
+      }
+
+      .error_egg {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .error_egg .egg_imgs {
+        width: 128px;
+        height: 128px;
+      }
+
+      .error_egg .egg_imgs img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .error_egg text {
+        font-size: 18px;
+        color: #000;
+        text-align: center;
+      }
+
+      .error_box .Punctuator {
+        margin-top: 250px;
+        width: 100%;
+        max-width: 350px;
+        height: 60px;
+        background: rgba(250, 218, 64, 1);
+        cursor: pointer;
+      }
+
+      /* ============================================== */
+      /* ========== 弹窗样式 ========== */
+      /* ============================================== */
+      .loading_bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        z-index: 9999;
+        background: url("../imgs/BGS.png") no-repeat center bottom;
+        background-size: 100% auto;
+        padding-bottom: env(safe-area-inset-bottom);
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
+      }
+      .loading_bg.animate-in {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .btn-true {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        right: 7%;
+        bottom: 250px;
+        width: 70px;
+        height: 28px;
+        border-radius: 23px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #fff;
+      }
+      .Rewards {
+        position: absolute;
+        left: 5%;
+        bottom: 200px;
+        font-weight: 500;
+        font-size: 16px;
+        color: #000;
+      }
+      .Rewards_bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 44px;
+        width: 250px;
+        height: 150px;
+        position: absolute;
+        left: 15%;
+        bottom: 50px;
+      }
+      .Rewards_bottom text {
+        font-weight: 500;
+        font-size: 18px;
+        color: #000;
+      }
+      .Rewards_btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 222px;
+        border-radius: 25px;
+        height: 37px;
+        background: rgba(250, 218, 64, 1);
+        box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="listen">
+      <div id="normalPage" style="display: block">
+        <div class="back_top">
+          <div class="p1">
+            <div class="text_back" onclick="back()">
+              <img src="../imgs/left.png" alt="返回" />
+            </div>
+            <div style="margin-right: 15px">看词翻译</div>
+            <div></div>
+          </div>
+          <div class="proess">
+            <progress id="progress" value="0" max="100"></progress>
+            <text id="progressText">0/0</text>
+          </div>
+        </div>
+
+        <div class="swiper">
+          <div class="top">
+            <div class="top_imgs" onclick="audioClick()">
+              <img src="../imgs/boing.png" alt="发音" />
+            </div>
+            <text id="currentWord"></text>
+          </div>
+
+          <div class="swiper_box">
+            <div class="imgs_bottom" id="optionsBox"></div>
+          </div>
+
+          <div class="Punctuator" id="checkBtn" onclick="PunctuatorClick()">
+            检查
+          </div>
+        </div>
+      </div>
+
+      <div class="error_box" id="reviewPage" style="display: none">
+        <div class="back_top" style="width: 100%">
+          <div class="p1">
+            <div class="text_back" onclick="back()">
+              <img src="../imgs/left.png" alt="返回" />
+            </div>
+            <div style="margin-right: 15px">看词翻译</div>
+            <div></div>
+          </div>
+          <div class="proess">
+            <progress id="reviewProgress" value="0" max="100"></progress>
+            <text id="reviewProgressText">0/0</text>
+          </div>
+        </div>
+        <div class="error_egg">
+          <div class="egg_imgs">
+            <img src="../imgs/logo.png" alt="错题" />
+          </div>
+          <text>再刷一遍先前失手的项目吧!</text>
+        </div>
+        <div class="Punctuator" onclick="startRedo()">继续</div>
+      </div>
+    </div>
+    <div id="resultModal" class="loading_bg">
+      <div class="btn-true" id="resultStatusBtn">正确</div>
+      <div class="Rewards" id="resultTips">回答的很好</div>
+      <div class="Rewards_bottom">
+        <text id="resultText">你也太棒了!</text>
+        <div class="Rewards_btn" onclick="now()">知道啦</div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { playTTS } from '../utils/tts.js'
+
+      const SwiperArr = {
+        type: 2,
+        sliderArr: [
+          {
+            name: "This frog",
+            bottleArr: [
+              { name: "这只青蛙" },
+              { name: "这只猫" },
+              { name: "这只狗" },
+              { name: "这只鸟" },
+            ],
+            correctIndex: 0,
+          },
+          {
+            name: "This cat",
+            bottleArr: [
+              { name: "这只青蛙" },
+              { name: "这只猫" },
+              { name: "这只狗" },
+              { name: "这只鸟" },
+            ],
+            correctIndex: 1,
+          },
+        ],
+      };
+
+      let pageStatus = "normal";
+      let wrongQuestions = [];
+      let redoIndex = 0;
+      let isFinished = false;
+      let IndexCurrent = 0;
+      let TextActive = null;
+      let lastAnswerCorrect = false;
+      let isTTSSpeaking = false;
+
+      // 新增：全局已完成题数（包含正常+重做）
+      let completedCount = 0;
+
+      const modal = document.getElementById("resultModal");
+      const resultStatusBtn = document.getElementById("resultStatusBtn");
+      const resultTips = document.getElementById("resultTips");
+      const resultText = document.getElementById("resultText");
+
+      window.onload = function () {
+        renderPage();
+        updateReviewProgress();
+      };
+
+      function renderPage() {
+        if (!SwiperArr) return;
+        const currentItem = SwiperArr.sliderArr[IndexCurrent];
+        document.getElementById("currentWord").innerText = currentItem.name;
+
+        const optionsBox = document.getElementById("optionsBox");
+        optionsBox.innerHTML = "";
+        currentItem.bottleArr.forEach((item, idx) => {
+          const option = document.createElement("div");
+          option.className = `option-item ${TextActive === idx ? "active" : ""}`;
+          option.innerText = item.name;
+          option.onclick = () => UserText(item, idx);
+          optionsBox.appendChild(option);
+        });
+
+        const total = SwiperArr.sliderArr.length;
+        const wrongLen = wrongQuestions.length;
+        const totalWithWrong = total + wrongLen;
+
+        let progressValue = 0;
+        let progressText = "";
+
+        // 正常答题阶段：用IndexCurrent计数
+        if (pageStatus === "normal") {
+          progressValue = ((IndexCurrent + 1) / total) * 100;
+          progressText = `${IndexCurrent + 1}/${totalWithWrong}`;
+        }
+        // 错题重做阶段：用全局completedCount计数
+        else if (pageStatus === "redoing") {
+          progressValue = ((completedCount + 1) / totalWithWrong) * 100;
+          progressText = `${completedCount + 1}/${totalWithWrong}`;
+        }
+
+        document.getElementById("progress").value = progressValue;
+        document.getElementById("progressText").innerText = progressText;
+
+        const checkBtn = document.getElementById("checkBtn");
+        TextActive !== null
+          ? checkBtn.classList.add("Punctuator_active")
+          : checkBtn.classList.remove("Punctuator_active");
+      }
+
+      // 错题页面顶部进度文字：固定 总题数/总题数+错题数
+      function updateReviewProgress() {
+        const total = SwiperArr.sliderArr.length;
+        const wrongLen = wrongQuestions.length;
+        const totalWithWrong = total + wrongLen;
+
+        document.getElementById("reviewProgress").value = 100;
+        document.getElementById("reviewProgressText").innerText =
+          `${total}/${totalWithWrong}`;
+      }
+
+      function UserText(selectedOption, index) {
+        if (isTTSSpeaking) return;
+        TextActive = index;
+        renderPage();
+      }
+
+      async function audioClick() {
+        if (!SwiperArr) return;
+        const currentItem = SwiperArr.sliderArr[IndexCurrent];
+        isTTSSpeaking = true;
+        try {
+          await playTTS(currentItem.name, { lang: 'en' });
+        } catch (e) {
+          console.error('TTS 播放失败:', e);
+        }
+        isTTSSpeaking = false;
+      }
+
+      function PunctuatorClick() {
+        if (TextActive === null) return;
+        const currentItem = SwiperArr.sliderArr[IndexCurrent];
+        const correctIndex = currentItem.correctIndex;
+        const isCorrect = TextActive === correctIndex;
+        lastAnswerCorrect = isCorrect;
+
+        if (!isCorrect && pageStatus === "normal") {
+          if (!wrongQuestions.includes(IndexCurrent)) {
+            wrongQuestions.push(IndexCurrent);
+            updateReviewProgress();
+          }
+        }
+
+        const correctAnswer = currentItem.bottleArr[correctIndex].name;
+        showResultModal(isCorrect, correctAnswer);
+      }
+
+      function showResultModal(isCorrect, answer) {
+        modal.className = "loading_bg";
+        let status = isCorrect ? 1 : 0;
+        resultStatusBtn.style.background =
+          status === 0 ? "rgba(255, 60, 60, 1)" : "rgba(93, 223, 22, 1)";
+        resultStatusBtn.innerText = status === 0 ? "不正确" : "正确";
+        resultTips.innerText = status === 0 ? "正确答案是:" : "回答的很好";
+        resultText.innerText = status === 0 ? answer : "你也太棒了!";
+        setTimeout(() => modal.classList.add("animate-in"), 50);
+      }
+
+      function now() {
+        modal.classList.remove("animate-in");
+        setTimeout(() => {
+          onClose();
+        }, 500);
+      }
+
+      function onClose() {
+        setTimeout(() => goNext(), 100);
+      }
+
+      function goNext() {
+        const total = SwiperArr.sliderArr.length;
+        const wrongLen = wrongQuestions.length;
+
+        if (pageStatus === "normal") {
+          if (IndexCurrent < total - 1) {
+            IndexCurrent++;
+            TextActive = null;
+          } else {
+            isFinished = true;
+            completedCount = total; // 正常答题完成，把全局计数设为总题数
+            if (wrongLen > 0) {
+              pageStatus = "review";
+              document.getElementById("normalPage").style.display = "none";
+              document.getElementById("reviewPage").style.display = "flex";
+              updateReviewProgress();
+            } else {
+              alert("完成");
+            }
+          }
+        } else if (pageStatus === "redoing") {
+          completedCount++; // 重做一题，全局计数+1
+          redoIndex++;
+          if (redoIndex < wrongLen) {
+            IndexCurrent = wrongQuestions[redoIndex];
+            TextActive = null;
+          } else {
+            pageStatus = "normal";
+            wrongQuestions = [];
+            completedCount = 0; // 重做完成，重置全局计数
+            alert("错题全部完成！");
+            document.getElementById("normalPage").style.display = "block";
+            document.getElementById("reviewPage").style.display = "none";
+            IndexCurrent = 0;
+            TextActive = null;
+          }
+        }
+        renderPage();
+      }
+
+      // 点击继续：开始重做，进度从completedCount+1开始
+      function startRedo() {
+        pageStatus = "redoing";
+        redoIndex = 0;
+        IndexCurrent = wrongQuestions[0];
+        TextActive = null;
+        document.getElementById("reviewPage").style.display = "none";
+        document.getElementById("normalPage").style.display = "block";
+        renderPage();
+      }
+
+      function back() {
+        window.history.back();
+      }
+    </script>
+  </body>
+</html>

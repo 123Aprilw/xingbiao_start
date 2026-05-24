@@ -10,7 +10,7 @@
 		})
 	}
 	onLoad((e) => {
-		console.log(e.lever)
+		console.log(e)
 		leverList.value = e.lever
 		Id.value = e.id
 		isType.value = Number(e.type)

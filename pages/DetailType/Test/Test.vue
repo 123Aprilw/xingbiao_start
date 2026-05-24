@@ -1,17 +1,20 @@
 <script setup lang="ts">
 	interface SwiperTs {
-		url : string
-		name : string
+		url ?: string
+		name : string // question
 		audio ?: string
 		treeTiger ?: string,
 		Word ?: string,
 		bottleArr ?: bottle[],
-		chinese ?: string
+		chinese ?: string // question_cn
 		correctIndex ?: number
 	}
 	interface bottle {
-		name : string
-		chinese : string
+		name : string // option.value
+		chinese ?: string
+		isTrue ?: boolean
+		key ?: string // option.key
+		image ?: string
 	}
 	interface PropsTs {
 		show : boolean,
@@ -31,27 +34,28 @@
 		Swiper : SwiperGTs[]
 	}
 	interface StudyTypeItem {
-		type : number // 学习类型：1=听，2=单词，3=读...
-		sliderArr : SwiperTs[] // 该学习类型对应的所有内容
+		type : number
+		sliderArr : SwiperTs[]
 	}
 	interface CourseItem {
 		id : number
 		title : string
 		location : string
-		type ?: number // 所属等级的type
-		Swiper ?: StudyTypeItem[] // 该课程下的所有学习类型内容
+		type ?: number
+		Swiper ?: StudyTypeItem[]
 	}
 
-	// 导入你封装的TTS
-	// import { textToSpeech, stopSpeak } from '@/utils/tts.ts'
 	import { ref, watch, nextTick, computed } from 'vue'
 	import { onLoad, onUnload } from '@dcloudio/uni-app'
 	import ProgressBar from '@/components/ProgressBar/ProgressBar.vue'
 	import Recording from '@/components/Recording/Recording.vue'
 	import Loading from '@/components/Status/Status.vue'
+	import { PostTestPoplur, GetTestData } from '@/utils/api.ts'
 
+	// 这里使用你项目里的TTS
+	import { playTTS as textToSpeech, stopTTS as stopSpeak, setTtsPlayEndCallback } from '@/utils/tts.ts'
 	const pageStatus = ref<'normal' | 'review' | 'redoing'>('normal')
-	const wrongQuestions = ref<number[]>([])
+	const wrongQuestions = ref<number[]>([]) // 错题ID数组
 	const redoIndex = ref(0)
 	const isFinished = ref(false)
 	let isPressiom = ref<boolean>(false)
@@ -63,7 +67,6 @@
 	let BonesType = ref<number>(null)
 	let SwiperData = ref({ interval: 0, duration: 500 })
 	let showChinese = ref(false)
-	// TTS播放锁（防重复朗读）
 	const isTTSSpeaking = ref(false)
 	let isProps = ref({ show: false, status: 0, name: '' })
 	let TextActive = ref<number>(null)
@@ -73,19 +76,42 @@
 	let SwiperArr = ref<StudyTypeItem | null>(null)
 	let isAudioLoading = ref<boolean>(false)
 	let lastAnswerCorrect = ref(false)
-	// 切换翻译
+
+	let quizToken = ref('') // 提交token
+
 	const toggleChinese = () => {
 		showChinese.value = !showChinese.value
 	}
-	// 校验是否可提交
+
 	const canCheck = computed(() => {
 		return TextActive.value !== null
 	})
 
-	const FetchWiper = (id : number, type : number) => {
-		const findArr = leverDetail.value.find(item => item.id === id)
-		if (findArr && findArr.Swiper) {
-			SwiperArr.value = findArr.Swiper.find(item => item.type === type)
+	// 获取题目
+	const FetchWiper = async (id : number, type : number) => {
+		try {
+			const res = await GetTestData(String(id), 'app')
+			console.log('接口返回数据：', res)
+			if (res.code === 1 && res.data?.list) {
+				quizToken.value = res.data.quiz_token || ''
+				const sliderArr : SwiperTs[] = res.data.list.map((item : any) => {
+					const bottleArr : bottle[] = item.options.map((opt : any) => ({
+						name: opt.value,
+						key: opt.key,
+						image: opt.image,
+						isTrue: opt.key === item.answer
+					}))
+					return {
+						name: item.question,
+						chinese: item.question_cn,
+						bottleArr,
+						correctIndex: item.options.findIndex((opt : any) => opt.key === item.answer)
+					}
+				})
+				SwiperArr.value = { type: 1, sliderArr }
+			}
+		} catch (err) {
+			console.log('获取题目失败：', err)
 		}
 	}
 
@@ -94,11 +120,39 @@
 		return IndexCurrent.value === SwiperArr.value.sliderArr.length - 1
 	}
 
-	// 下一题逻辑（删除所有原生音频调用）
+	// ==========================
+	// ✅ 进度条（和参考完全一致）
+	// ==========================
+	const progressText = computed(() => {
+		if (!SwiperArr.value) return '0/0'
+		const originalTotal = SwiperArr.value.sliderArr.length
+		if (pageStatus.value === 'normal') {
+			return `${IndexCurrent.value + 1}/${originalTotal}`
+		}
+		const allTotal = originalTotal + wrongQuestions.value.length
+		let current = 0
+		if (pageStatus.value === 'review') current = originalTotal
+		if (pageStatus.value === 'redoing') current = originalTotal + redoIndex.value + 1
+		return `${current}/${allTotal}`
+	})
+
+	const progressPercent = computed(() => {
+		if (!SwiperArr.value) return 0
+		const originalTotal = SwiperArr.value.sliderArr.length
+		if (pageStatus.value === 'normal') {
+			return ((IndexCurrent.value + 1) / originalTotal) * 100
+		}
+		const allTotal = originalTotal + wrongQuestions.value.length
+		let current = 0
+		if (pageStatus.value === 'review') current = originalTotal
+		if (pageStatus.value === 'redoing') current = originalTotal + redoIndex.value + 1
+		return allTotal ? (current / allTotal) * 100 : 0
+	})
+
 	const goNext = () => {
 		if (!SwiperArr.value) return
-		// 切换题目停止TTS，防止旁白残留
 		stopSpeak()
+		isTTSSpeaking.value = false
 
 		const total = SwiperArr.value.sliderArr.length
 		if (pageStatus.value === 'normal') {
@@ -107,9 +161,12 @@
 				TextActive.value = null
 			} else {
 				isFinished.value = true
-				wrongQuestions.value.length > 0 ? (pageStatus.value = 'review') : uni.navigateTo({
-					url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}`
-				})
+				submitAnswers() // 提交错题
+				wrongQuestions.value.length > 0
+					? (pageStatus.value = 'review')
+					: uni.navigateTo({
+						url: `/pages/Bones/Bones?id=${BonesId.value}&type=${Typeis.value}`
+					})
 			}
 			return
 		}
@@ -122,6 +179,26 @@
 		}
 	}
 
+	// ==============================================
+	// 🔥 ✅ 修复：提交 错题 ID 数组给后端（完全对齐参考）
+	// ==============================================
+	const submitAnswers = async () => {
+		try {
+			// 后端需要的是：做错的题目 ID 数组
+			const wrongIds = wrongQuestions.value.map(id => id + 1) // 题号+1（和参考一致）
+
+			const res = await PostTestPoplur(
+				quizToken.value,
+				String(BonesId.value),
+				wrongIds,
+				'app'
+			)
+			console.log('✅ 错题提交成功：', res)
+		} catch (err) {
+			console.log('❌ 提交失败：', err)
+		}
+	}
+
 	const startRedo = () => {
 		pageStatus.value = 'redoing'
 		redoIndex.value = 0
@@ -129,73 +206,73 @@
 		TextActive.value = null
 	}
 
-	// 提交检查（弹框逻辑 完全不变）
+	// ==========================
+	// ✅ 检查题目 + 记录错题
+	// ==========================
 	const PunctuatorClick = () => {
 		if (!canCheck.value || !SwiperArr.value) return
 		const currentItem = SwiperArr.value.sliderArr[IndexCurrent.value]
 		if (!currentItem?.bottleArr) return
 
-		// 1. 获取用户选中的选项
 		const selectedOption = currentItem.bottleArr[TextActive.value]
-
-		// 2. 判断用户选的这个选项是否正确（看 isTrue）
 		const isCorrect = selectedOption.isTrue === true
-
-		// 3. 找到真正正确的那个答案（用于答错时显示）
 		const correctAnswer = currentItem.bottleArr.find(item => item.isTrue === true)
 
 		lastAnswerCorrect.value = isCorrect
 
-		// 错题收集
-		if (!isCorrect && pageStatus.value === 'normal' && !wrongQuestions.value.includes(IndexCurrent.value)) {
-			wrongQuestions.value.push(IndexCurrent.value)
+		// 🔥 核心：答错才加入错题集
+		if (!isCorrect && pageStatus.value === 'normal') {
+			if (!wrongQuestions.value.includes(IndexCurrent.value)) {
+				wrongQuestions.value.push(IndexCurrent.value)
+			}
 		}
 
-		// 给弹窗赋值
 		isProps.value.show = true
 		isProps.value.status = isCorrect ? 1 : 0
 		isProps.value.name = isCorrect ? '' : (correctAnswer?.name || '未知答案')
 	}
 
 	const back = () => {
-		// 仅停止TTS
 		stopSpeak()
+		isTTSSpeaking.value = false
 		uni.navigateBack()
 	}
 
-	// 点击选项播放TTS
-	const UserText = async (selectedOption, index : number) => {
-		// 防重复点击
-		if (isTTSSpeaking.value) return
-		// 选中选项
+	// 播放英文+中文
+	const UserText = (selectedOption : any, index : number) => {
 		TextActive.value = index
-		try {
-			isTTSSpeaking.value = true
-			stopSpeak() // 先停掉之前的发音
-			await textToSpeech(selectedOption.name, true) // 朗读选项
-		} catch (err) {
-			console.error('选项朗读失败', err)
-		} finally {
-			isTTSSpeaking.value = false
-		}
+		if (isTTSSpeaking.value) return
+		stopSpeak()
+		isTTSSpeaking.value = true
+		textToSpeech(selectedOption.name, { speed: 50 })
+		setTtsPlayEndCallback(() => {
+			if (showChinese.value && selectedOption.chinese) {
+				textToSpeech(selectedOption.chinese, { speed: 50 })
+				setTtsPlayEndCallback(() => {
+					isTTSSpeaking.value = false
+				})
+			} else {
+				isTTSSpeaking.value = false
+			}
+		})
 	}
 
-	// ✅ 新增：点击播放图标触发TTS朗读当前题目
-	const audioClick = async () => {
+	const audioClick = () => {
 		if (!SwiperArr.value) return
 		const currentItem = SwiperArr.value.sliderArr[IndexCurrent.value]
-		if (!currentItem) return
-
-		try {
-			isTTSSpeaking.value = true
-			stopSpeak()
-			// 朗读当前题目的name（或你想朗读的字段）
-			await textToSpeech(currentItem.name, true)
-		} catch (err) {
-			console.error('TTS播放失败:', err)
-		} finally {
-			isTTSSpeaking.value = false
-		}
+		stopSpeak()
+		isTTSSpeaking.value = true
+		textToSpeech(currentItem.name, { speed: 50 })
+		setTtsPlayEndCallback(() => {
+			if (showChinese.value && currentItem.chinese) {
+				textToSpeech(currentItem.chinese, { speed: 50 })
+				setTtsPlayEndCallback(() => {
+					isTTSSpeaking.value = false
+				})
+			} else {
+				isTTSSpeaking.value = false
+			}
+		})
 	}
 
 	const onClose = () => {
@@ -221,38 +298,37 @@
 
 	onUnload(() => {
 		stopSpeak()
+		isTTSSpeaking.value = false
 	})
 </script>
 
 <template>
 	<view class="listen">
-		<view class=" " v-if="pageStatus === 'normal' || pageStatus==='redoing'">
-			<view class="back_top">
-				<view class="p1">
-					<view class="text_back" @click="back()">
-						<image src="/static/left.png" mode=""></image>
-					</view>
-					<view class="" style="margin-right: 30rpx;">Quiz/测验</view>
-					<view class="imge">
-						<view class="cinese" @click="toggleChinese">
-							<image :src="showChinese===true?'/static/YELLOW.png':'/static/english.png'" mode=""></image>
-						</view>
-					</view>
+		<view class="back_top">
+			<view class="p1">
+				<view class="text_back" @click="back()">
+					<image src="/static/left.png" mode=""></image>
 				</view>
-				<view class="proess">
-					<progress :percent="((IndexCurrent + 1) / (SwiperArr?.sliderArr.length || 1)) * 100"
-						stroke-width="22rpx" activeColor='rgba(250, 218, 64, 1)' style="width: 630rpx;" />
-					<text>{{IndexCurrent+1}}/{{SwiperArr?.sliderArr?.length || 0}}</text>
+				<view class="" style="margin-right: 30rpx;">Quiz/测验</view>
+				<view class="imge">
+					<view class="cinese" @click="toggleChinese">
+						<image :src="showChinese===true?'/static/YELLOW.png':'/static/english.png'" mode=""></image>
+					</view>
 				</view>
 			</view>
+			<view class="proess">
+				<progress :percent="progressPercent" stroke-width="22rpx" activeColor='rgba(250, 218, 64, 1)'
+					style="width: 630rpx;" />
+				<text>{{ progressText }}</text>
+			</view>
+		</view>
 
+		<view class=" " v-if="pageStatus === 'normal' || pageStatus==='redoing'">
 			<view class="swiper">
 				<view class="top">
-					<!-- 点击播放图标 → 触发TTS朗读 -->
 					<view class="top_imgs" @click="audioClick">
 						<image src="/static/listning.png" mode="widthFix"></image>
 					</view>
-					<!-- ✅ 修复：用正确的 sliderArr 访问，并加可选链 -->
 					<view class="chinese" style="display: flex;flex-direction: column;">
 						<text class="englist">{{SwiperArr?.sliderArr[IndexCurrent]?.name}}</text>
 						<text v-show="showChinese">{{SwiperArr?.sliderArr[IndexCurrent]?.chinese}}</text>
@@ -266,13 +342,12 @@
 								:style="{background:TextActive===idx?'rgba(250, 218, 64, 1)':'rgba(255, 255, 255, 0.6)'}"
 								@click="UserText(item, idx)">
 								<text>{{item.name}}</text>
-								<text v-if="showChinese">{{item.chinese}}</text>
+								<text v-if="showChinese" style="font-size: 28rpx; color: #666;">{{item.chinese}}</text>
 							</view>
 						</template>
 					</view>
 				</view>
 
-				<!-- 检查按钮：选择完成后点击弹框 -->
 				<view class="Punctuator" @click="PunctuatorClick" :class="{Punctuator_active:canCheck}">
 					检查
 				</view>
@@ -371,8 +446,6 @@
 					width: 100rpx;
 					height: 90rpx;
 					flex-shrink: 0;
-					/* 禁止被压缩 */
-					flex-grow: 0;
 
 					image {
 						width: 100%;
@@ -402,9 +475,9 @@
 
 			.swiper_box {
 				width: 750rpx;
-				height: 500rpx;
 				border-radius: 25rpx;
 				overflow: hidden;
+				margin-bottom: 50rpx;
 
 				.imgs_bottom {
 					display: flex;
@@ -447,7 +520,7 @@
 		}
 
 		.error_box {
-			margin-top: 100rpx;
+			flex: 1;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;

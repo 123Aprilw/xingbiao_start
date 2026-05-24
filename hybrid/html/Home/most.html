@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>看词</title>
+    <style lang="scss">
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: #f5f6fa;
+        width: 100vw;
+        height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .listen {
+        width: 100%;
+        max-width: 750px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+
+        .back_top {
+          padding-top: calc(44px + env(safe-area-inset-top));
+          display: flex;
+          flex-direction: column;
+          gap: 36rpx;
+          gap: calc(36 * (100vw / 750));
+          padding: 88rpx 20rpx 20rpx;
+          padding: calc(88 * (100vw / 750)) 20rpx 20rpx;
+          flex-shrink: 0;
+          background: #fff;
+
+          .p1 {
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .text_back {
+              width: 32rpx;
+              width: calc(32 * (100vw / 750));
+              height: 32rpx;
+              height: calc(32 * (100vw / 750));
+              cursor: pointer;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+              }
+            }
+
+            .text {
+              font-size: 32rpx;
+              font-size: calc(32 * (100vw / 750));
+              font-weight: 500;
+            }
+          }
+
+          .proess {
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            progress {
+              width: 630rpx;
+              width: calc(630 * (100vw / 750));
+              height: 22rpx;
+              height: calc(22 * (100vw / 750));
+              border-radius: 20rpx;
+              border-radius: calc(20 * (100vw / 750));
+              background: #f0f0f0;
+            }
+
+            text {
+              font-size: 26rpx;
+              font-size: calc(26 * (100vw / 750));
+              color: #333;
+            }
+          }
+        }
+
+        .list_top {
+          padding: 10px;
+          flex: 1;
+          background-color: #f5f6fa;
+          display: flex;
+          flex-direction: column;
+          gap: 52rpx;
+          gap: calc(52 * (100vw / 750));
+          padding: 25rpx 24rpx;
+          padding: calc(25 * (100vw / 750)) 24rpx;
+
+          .top {
+            display: flex;
+            align-items: center;
+            gap: 40rpx;
+            gap: calc(40 * (100vw / 750));
+
+            .top_imgs {
+              width: 88rpx;
+              width: calc(88 * (100vw / 750));
+              height: 88rpx;
+              height: calc(88 * (100vw / 750));
+              cursor: pointer;
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+              }
+            }
+
+            text {
+              font-size: 34rpx;
+              font-size: calc(34 * (100vw / 750));
+              font-weight: 500;
+              color: #000;
+            }
+          }
+
+          .center {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20rpx;
+            gap: calc(20 * (100vw / 750));
+            width: 100%;
+            max-width: 710rpx;
+            max-width: calc(710 * (100vw / 750));
+            margin: 0 auto;
+
+            .center_box {
+              border: none;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              width: 48%;
+              aspect-ratio: 344/350;
+              border-radius: 24rpx;
+              border-radius: calc(24 * (100vw / 750));
+              transition: all 0.25s ease;
+              cursor: pointer;
+              overflow: hidden;
+
+              .box_top {
+                width: 100%;
+                height: 60%;
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  border-top-left-radius: 25rpx;
+                  border-top-left-radius: calc(25 * (100vw / 750));
+                }
+              }
+
+              .box_bottom {
+                width: 100%;
+                height: 40%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: #fff;
+                box-shadow: 0 4px 12px rgba(240, 244, 245, 1);
+                font-size: 30rpx;
+                font-size: calc(30 * (100vw / 750));
+                border-bottom-right-radius: 25rpx;
+                border-bottom-left-radius: 25rpx;
+                border-bottom-right-radius: calc(25 * (100vw / 750));
+                border-bottom-left-radius: calc(25 * (100vw / 750));
+              }
+            }
+
+            .isBg {
+              background: #ffe774;
+
+              .box_bottom {
+                background: #ffe774;
+                box-shadow: none;
+              }
+            }
+          }
+
+          .Punctuator {
+            margin-top: 50rpx;
+            margin-top: calc(50 * (100vw / 750));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50rpx;
+            border-radius: calc(50 * (100vw / 750));
+            width: 95%;
+            height: 120rpx;
+            height: calc(120 * (100vw / 750));
+            background: #fff;
+            box-shadow: 0 -2px 14px rgba(120, 120, 120, 0.1);
+            font-size: 32rpx;
+            font-size: calc(32 * (100vw / 750));
+            color: #000;
+            transition: all 0.28s ease-out;
+            cursor: pointer;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .Punctuator_active {
+            background: #fada40;
+          }
+
+          .Punctuator:active {
+            transform: scale(0.96);
+            opacity: 0.92;
+          }
+        }
+
+        .error_box {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 0 24rpx;
+
+          .error_egg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30rpx;
+            gap: calc(30 * (100vw / 750));
+
+            .egg_imgs {
+              width: 256rpx;
+              width: calc(256 * (100vw / 750));
+              height: 256rpx;
+              height: calc(256 * (100vw / 750));
+
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+              }
+            }
+
+            text {
+              font-size: 36rpx;
+              font-size: calc(36 * (100vw / 750));
+              font-weight: 500;
+              color: #000;
+              text-align: center;
+            }
+          }
+
+          .Punctuator {
+            margin-top: 500rpx;
+            margin-top: calc(500 * (100vw / 750));
+            width: 95%;
+            height: 120rpx;
+            height: calc(120 * (100vw / 750));
+            border-radius: 50rpx;
+            border-radius: calc(50 * (100vw / 750));
+            background: #fada40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32rpx;
+            font-size: calc(32 * (100vw / 750));
+            box-shadow: 0 -2px 14px rgba(120, 120, 120, 0.1);
+            cursor: pointer;
+            transition: all 0.28s ease;
+          }
+
+          .Punctuator:active {
+            transform: scale(0.96);
+            opacity: 0.92;
+          }
+        }
+      }
+
+      /* 进度条样式 */
+      progress {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 22rpx;
+        height: calc(22 * (100vw / 750));
+        border-radius: 20rpx;
+        border-radius: calc(20 * (100vw / 750));
+      }
+
+      progress::-webkit-progress-bar {
+        background: #f0f0f0;
+        border-radius: 20rpx;
+        border-radius: calc(20 * (100vw / 750));
+      }
+
+      progress::-webkit-progress-value {
+        background: #fada40;
+        border-radius: 20rpx;
+        border-radius: calc(20 * (100vw / 750));
+      }
+
+      /* 弹窗遮罩 */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.3);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+      }
+
+      .modal.show {
+        display: flex;
+      }
+
+      .modal-content {
+        width: 200rpx;
+        height: 200rpx;
+        background: #fff;
+        border-radius: 20rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 10rpx;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="listen">
+      <!-- 顶部导航 -->
+      <div class="back_top">
+        <div class="p1">
+          <div class="text_back" onclick="goBack()">
+            <img src="../imgs/left.png" alt="返回" />
+          </div>
+          <div class="text">看词</div>
+          <div></div>
+        </div>
+        <div class="proess">
+          <progress id="progress" :percent="progressPercent"></progress>
+          <text id="pageText">1/8</text>
+        </div>
+      </div>
+
+      <!-- 答题区域 -->
+      <div class="list_top" id="normalPage" style="display: flex">
+        <div class="top">
+          <div class="top_imgs" onclick="playAudio()">
+            <img src="../imgs/boing.png" alt="发音" />
+          </div>
+          <text id="title">cat</text>
+        </div>
+
+        <div class="center" id="options">
+          <div class="center_box" onclick="select(0)">
+            <div class="box_top">
+              <img src="/static/666.png" alt="" />
+            </div>
+            <div class="box_bottom">猫</div>
+          </div>
+          <div class="center_box" onclick="select(1)">
+            <div class="box_top">
+              <img src="/static/666.png" alt="" />
+            </div>
+            <div class="box_bottom">狗</div>
+          </div>
+        </div>
+
+        <div class="Punctuator" id="checkBtn" onclick="checkAnswer()">检查</div>
+      </div>
+
+      <!-- 错题回顾 -->
+      <div class="error_box" id="errorPage" style="display: none">
+        <div class="error_egg">
+          <div class="egg_imgs">
+            <img src="/static/logonew.png" alt="" />
+          </div>
+          <text>在刷一遍先前失手的项目吧!</text>
+        </div>
+        <div class="Punctuator" onclick="redoWrong()">继续</div>
+      </div>
+
+      <!-- 结果弹窗 -->
+      <div class="modal" id="modal">
+        <div class="modal-content">
+          <img src="" id="modalIcon" width="50" />
+          <div id="modalText"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ===================== 数据 =====================
+      const totalPages = 8;
+      let currentPage = 1;
+      let selectedIndex = -1;
+      let wrongList = [];
+      let pageStatus = "normal"; // normal / review / redoing
+      let redoIndex = 0;
+
+      // 模拟题目数据
+      const questions = [
+        { title: "cat", answer: "猫", list: [{ name: "猫" }, { name: "狗" }] },
+        { title: "dog", answer: "狗", list: [{ name: "猫" }, { name: "狗" }] },
+        { title: "bird", answer: "鸟", list: [{ name: "鸟" }, { name: "鱼" }] },
+        { title: "fish", answer: "鱼", list: [{ name: "鸟" }, { name: "鱼" }] },
+        {
+          title: "apple",
+          answer: "苹果",
+          list: [{ name: "苹果" }, { name: "香蕉" }],
+        },
+        {
+          title: "banana",
+          answer: "香蕉",
+          list: [{ name: "苹果" }, { name: "香蕉" }],
+        },
+        {
+          title: "egg",
+          answer: "鸡蛋",
+          list: [{ name: "鸡蛋" }, { name: "面包" }],
+        },
+        {
+          title: "bread",
+          answer: "面包",
+          list: [{ name: "鸡蛋" }, { name: "面包" }],
+        },
+      ];
+
+      // ===================== 工具方法 =====================
+      function updateProgress() {
+        const percent = (currentPage / totalPages) * 100;
+        document.getElementById("progress").value = percent;
+        document.getElementById("pageText").innerText =
+          `${currentPage}/${totalPages}`;
+      }
+
+      function renderQuestion() {
+        const q = questions[currentPage - 1];
+        document.getElementById("title").innerText = q.title;
+        const options = document.querySelectorAll(".center_box");
+        options.forEach((el, i) => {
+          el.querySelector(".box_bottom").innerText = q.list[i].name;
+          el.classList.remove("isBg");
+        });
+        selectedIndex = -1;
+        document
+          .getElementById("checkBtn")
+          .classList.remove("Punctuator_active");
+      }
+
+      function select(index) {
+        selectedIndex = index;
+        const items = document.querySelectorAll(".center_box");
+        items.forEach((el) => el.classList.remove("isBg"));
+        items[index].classList.add("isBg");
+        document.getElementById("checkBtn").classList.add("Punctuator_active");
+      }
+
+      // ===================== 核心逻辑 =====================
+      function goBack() {
+        history.back();
+      }
+
+      function playAudio() {
+        // 这里可接入语音播放
+        console.log("播放：", questions[currentPage - 1].title);
+      }
+
+      function checkAnswer() {
+        if (selectedIndex === -1) return;
+        const q = questions[currentPage - 1];
+        const userAns = q.list[selectedIndex].name;
+        const isRight = userAns === q.answer;
+
+        showModal(isRight);
+        setTimeout(() => {
+          closeModal();
+          next();
+        }, 800);
+      }
+
+      function next() {
+        if (currentPage < totalPages) {
+          currentPage++;
+          updateProgress();
+          renderQuestion();
+        } else {
+          if (wrongList.length > 0) {
+            document.getElementById("normalPage").style.display = "none";
+            document.getElementById("errorPage").style.display = "flex";
+            pageStatus = "review";
+          } else {
+            alert("全部完成！");
+          }
+        }
+      }
+
+      function redoWrong() {
+        currentPage = wrongList[0];
+        pageStatus = "redoing";
+        redoIndex = 0;
+        document.getElementById("errorPage").style.display = "none";
+        document.getElementById("normalPage").style.display = "flex";
+        updateProgress();
+        renderQuestion();
+      }
+
+      function showModal(isRight) {
+        const modal = document.getElementById("modal");
+        const icon = document.getElementById("modalIcon");
+        const text = document.getElementById("modalText");
+        modal.classList.add("show");
+        if (isRight) {
+          icon.src = "/static/right.png";
+          text.innerText = "正确";
+        } else {
+          icon.src = "/static/wrong.png";
+          text.innerText = "错误";
+          wrongList.push(currentPage);
+        }
+      }
+
+      function closeModal() {
+        document.getElementById("modal").classList.remove("show");
+      }
+
+      // 初始化
+      window.onload = function () {
+        updateProgress();
+        renderQuestion();
+      };
+    </script>
+  </body>
+</html>

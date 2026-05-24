@@ -1,5 +1,6 @@
 <script setup lang="ts">
 	import { watch, ref, computed, nextTick } from "vue";
+	import { onUnload } from '@dcloudio/uni-app'
 	const emit = defineEmits(["close"]);
 	let Status = ref<number>(0);
 	let name = ref<string>("");
@@ -14,7 +15,12 @@
 	// 本地音频播放（你本地的正确/错误音效）
 	// ==========================================
 	let audio : UniApp.InnerAudioContext | null = null;
+	let audioTimer : ReturnType<typeof setTimeout> | null = null;
 	function playLocalAudio(url : string) {
+		if (audioTimer) {
+			clearTimeout(audioTimer); // 先清除定时器，避免它后续执行
+			audioTimer = null;
+		}
 		if (audio) {
 			audio.stop();
 			audio.destroy();
@@ -22,9 +28,12 @@
 		audio = uni.createInnerAudioContext();
 		audio.src = url;
 		audio.play();
-		setTimeout(() => {
-			audio.destroy();
-			audio = null;
+		audioTimer = setTimeout(() => {
+			if (audio) {
+				audio.destroy();
+				audio = null;
+			}
+			audioTimer = null;
 		}, 2000);
 	}
 
@@ -64,6 +73,15 @@
 
 	watch(() => props.Status, (val) => (Status.value = val), { immediate: true });
 	watch(() => props.name, (val) => (name.value = val), { immediate: true });
+	onUnload(() => {
+		if (audioTimer) {
+			clearTimeout(audioTimer);
+		}
+		if (audio) {
+			audio.destroy();
+			audio = null;
+		}
+	});
 </script>
 
 <template>

@@ -1,0 +1,215 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue",
+    sans-serif;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.page-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background-color: #ffd333;
+  color: #000;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: calc(44px + env(safe-area-inset-top));
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-back {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.header-right {
+  width: 24px;
+}
+
+.container {
+  padding: 16px;
+  max-width: 750px;
+  margin: 0 auto;
+}
+
+.banner {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.banner img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+.btn-primary {
+  background-color: #ffd333;
+  color: #000;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.module-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.module-item:hover {
+  background-color: #fafafa;
+}
+
+.module-item:not(:last-child) {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.module-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.module-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+}
+
+.module-name {
+  font-size: 16px;
+  color: #333;
+}
+
+.module-right {
+  font-size: 15px;
+}
+
+.go-learn {
+  color: #666;
+}
+
+.completed {
+  background-color: #ffd333;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.icon-orange {
+  background: radial-gradient(
+      56.41% 56.41% at 50% 50%,
+      #ffd39c 0%,
+      #f38700 100%
+    )
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.icon-red {
+  background: radial-gradient(50% 50% at 50% 50%, #ffbab1 0%, #eb7a73 100%)
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.icon-purple {
+  background: radial-gradient(50% 50% at 50% 50%, #c1b6f7 0%, #8985f0 100%)
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.icon-green {
+  background: radial-gradient(50% 50% at 50% 50%, #d7ff7e 0%, #a7d53f 100%)
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+.icon-blue {
+  background: radial-gradient(50% 50% at 50% 50%, #c1b6f7 0%, #8985f0 100%)
+    /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 24px;
+  }
+
+  .header-title {
+    font-size: 20px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .module-name {
+    font-size: 17px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    max-width: 750px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+}

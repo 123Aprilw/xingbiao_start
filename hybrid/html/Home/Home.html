@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1.At The Lake - 学习页面</title>
+    <link rel="stylesheet" href="../static/style.css" />
+    <style>
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 0 4px;
+      }
+
+      .info-left {
+        font-size: 15px;
+        color: #333;
+      }
+
+      .info-right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        color: #333;
+        gap: 8px;
+      }
+
+      .star {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+
+      .star img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .module-card {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 8px 0;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .quiz-item {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .header-back svg {
+        width: 24px;
+        height: 24px;
+        stroke: #000;
+      }
+
+      .completed-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .completed-badge svg {
+        width: 14px;
+        height: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-container">
+      <div class="header">
+        <div class="header-back" onclick="goBack()">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+        </div>
+        <div class="header-title">At The Lake</div>
+        <div class="header-right"></div>
+      </div>
+
+      <div class="container">
+        <div class="banner">
+          <img src="../imgs/bg.png" alt="At The Lake" />
+        </div>
+
+        <div class="info-row">
+          <div class="info-left">等级：AA</div>
+          <div class="info-right">
+            <span>收藏：</span>
+            <div class="star" onclick="collect()">
+              <img src="../imgs/start.png" alt="收藏" id="starImg" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">基础学习</div>
+        <div class="module-card">
+          <div class="module-item" onclick="goToLearn('listen')">
+            <div class="module-left">
+              <div class="module-icon icon-orange">
+                <img
+                  src="../imgs/ear.png"
+                  alt=""
+                  style="width: 70%; height: 70%"
+                />
+              </div>
+              <div class="module-name">Listen/听</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+          <div class="module-item" onclick="goToLearn('word')">
+            <div class="module-left">
+              <div class="module-icon icon-red">
+                <img
+                  src="../imgs/world.png"
+                  alt=""
+                  style="width: 70%; height: 70%"
+                />
+              </div>
+              <div class="module-name">Word/单词</div>
+            </div>
+            <div class="module-right completed completed-badge">
+              <svg
+                viewBox="0 0 24 24"
+                fill="#000"
+                stroke="#000"
+                stroke-width="2"
+              >
+                <path d="M20 6L9 17l-5-5" />
+              </svg>
+              已完成
+            </div>
+          </div>
+          <div class="module-item" onclick="goToLearn('read')">
+            <div class="module-left">
+              <div class="module-icon icon-purple">
+                <img
+                  src="../imgs/ready_bg.png"
+                  alt=""
+                  style="width: 70%; height: 70%; padding-top: 2px"
+                />
+              </div>
+              <div class="module-name">Read/读</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+        </div>
+
+        <div class="section-title">巩固练习</div>
+        <div class="module-card">
+          <div class="module-item" onclick="goToPractice('most')">
+            <div class="module-left">
+              <div class="module-icon icon-orange">
+                <img
+                  src="../imgs/world.png"
+                  alt=""
+                  style="width: 70%; height: 70%; padding-top: 2px"
+                />
+              </div>
+              <div class="module-name">Word/看词</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+          <div class="module-item" onclick="goToPractice('picture')">
+            <div class="module-left">
+              <div class="module-icon icon-red">
+                <img
+                  src="../imgs/look.png"
+                  alt=""
+                  style="width: 70%; height: 70%; padding-top: 2px"
+                />
+              </div>
+              <div class="module-name">Picture/看图</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+          <div class="module-item" onclick="goToPractice('translate')">
+            <div class="module-left">
+              <div class="module-icon icon-green">
+                <img
+                  src="../imgs/look_word.png"
+                  alt=""
+                  style="width: 70%; height: 70%; padding-top: 2px"
+                />
+              </div>
+              <div class="module-name">Translate/看词翻译</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+          <div class="module-item" onclick="goToPractice('match')">
+            <div class="module-left">
+              <div class="module-icon icon-purple">
+                <img
+                  src="../imgs/China.png"
+                  alt=""
+                  style="width: 70%; height: 70%; padding-top: 2px"
+                />
+              </div>
+              <div class="module-name">Match/中英文匹配</div>
+            </div>
+            <div class="module-right go-learn">去学习</div>
+          </div>
+        </div>
+
+        <div class="quiz-item" onclick="goToQuiz()">
+          <div class="module-left">
+            <div class="module-icon icon-orange">
+              <img
+                src="../imgs/ce.png"
+                alt=""
+                style="width: 70%; height: 70%; padding-top: 2px"
+              />
+            </div>
+            <div class="module-name">Quiz/测验</div>
+          </div>
+          <div class="module-right go-learn">去学习</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function goBack() {
+        window.location.href = "../index.html";
+      }
+
+      function collect() {
+        const starImg = document.getElementById("starImg");
+        const emptyStar = "../imgs/yellow_start.png";
+        const filledStar = "../imgs/start.png";
+
+        if (starImg.src.endsWith("empty")) {
+          starImg.src = emptyStar;
+        } else {
+          starImg.src = filledStar;
+        }
+      }
+
+      function goToLearn(type) {
+        console.log(type);
+        if (type === "listen") {
+          window.location.href = "listen.html";
+        } else if (type === "word") {
+          window.location.href = "word.html";
+        } else {
+          window.location.href = "read.html";
+        }
+      }
+
+      function goToPractice(type) {
+        console.log(type);
+        if (type === "most") {
+          window.location.href = "most.html";
+        } else if (type === "picture") {
+          window.location.href = "picture.html";
+        } else if (type === "translate") {
+          window.location.href = "translate.html";
+        } else {
+          window.location.href = "match.html";
+        }
+      }
+
+      function goToQuiz() {
+        window.location.href = "quiz.html";
+      }
+    </script>
+  </body>
+</html>

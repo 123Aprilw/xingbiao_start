@@ -49,7 +49,7 @@
 							</view>
 							<view class="icon-item"
 								:style="{backgroundColor:book.is_look_word_done===false?'#f3f4f8':'rgba(254, 244, 193, 1)'}">
-								<image :src="book.is_look_word_done===false?'/static/read.png':'/static/readActive.png'"
+								<image :src="book.is_look_word_done===false?'/static/read.png':'/static/tingActive.png'"
 									mode=""></image>
 							</view>
 						</view>

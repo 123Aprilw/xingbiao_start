@@ -21,6 +21,7 @@
 		lever : string | null,
 		SearchText : string | number
 	}>()
+	let Lever_Title = ref<string>('')
 	const bookList = ref<BooksTs[]>([])
 	const page = ref<string>('1')
 	const BooksNum = ref<number>(0)
@@ -155,11 +156,12 @@
 		});
 	}
 	// 监听分级切换，刷新列表
-	watch(() => [props.index, props.SearchText], async () => {
+	watch(() => [props.index, props.SearchText, props.lever], async () => {
 		if (!props.index || props.index === 'null') return
 		page.value = '1'
 		noMore.value = false
 		bookList.value = []
+		Lever_Title.value = props.lever
 		await fetchBooks(true)
 		fetchBooksNums()
 	}, { immediate: true })
@@ -170,7 +172,8 @@
 		<scroll-view class="scroll-view" scroll-y refresher-enabled :refresher-triggered="false"
 			@refresherrefresh="onRefresh" @scrolltolower="onLoadMore">
 			<view class="books">
-				<view class="list" v-for="item in bookList" :key="item.id" @click="goDetail(item)">
+				<view class="list" v-for="(item,index) in bookList" :key="item.id" @click="goDetail(item)"
+					:style="`--i:${index}`">
 					<view class="imgs">
 						<image src="/static/study.png" mode=""></image>
 					</view>
@@ -199,8 +202,11 @@
 										:src="uni.getStorageSync('book_listen_finished_'+item.id)?'/static/singActive.png':'/static/singing.png'"
 										mode=""></image>
 								</view>
-								<view class="listen">
-									<image src="/static/read.png" mode=""></image>
+								<view class="listen"
+									:style="{backgroundColor:uni.getStorageSync('LEARN_STATUS_FINISHED')===true?'rgba(254, 244, 193, 1)':'rgba(243, 244, 248, 1)'}">
+									<image
+										:src="uni.getStorageSync('LEARN_STATUS_FINISHED')===true ? '/static/tingActive.png':'/static/read.png'"
+										mode=""></image>
 								</view>
 							</view>
 							<view class="iconst_right" @tap.stop="Collect(item)">
@@ -227,10 +233,12 @@
 		gap: 20rpx;
 		padding: 10rpx 28rpx;
 		background-color: rgba(245, 246, 250, 1);
+		overflow-x: hidden;
 
 		.scroll-view {
 			flex: 1;
 			height: calc(100vh - 200rpx);
+			overflow-x: hidden !important;
 		}
 
 		text {
@@ -245,14 +253,27 @@
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
+			overflow-x: hidden;
+
+			:root &::-webkit-scrollbar {
+				display: none;
+				/* 再禁webkit滚动条 */
+			}
 
 			.list {
 				display: flex;
 				flex-direction: column;
+				opacity: 0;
+				transform: translateY(30rpx);
+				animation: fadeIn 0.5s ease forwards;
+				animation-delay: calc(var(--i) * 0.1s);
+				will-change: opacity;
 
+				/* 依次延迟显示 */
 				.imgs {
 					width: 342rpx;
 					height: 278rpx;
+					overflow: hidden;
 
 					image {
 						width: 100%;
@@ -351,6 +372,13 @@
 					}
 				}
 			}
+		}
+	}
+
+	@keyframes fadeIn {
+		to {
+			opacity: 1;
+			transform: translateY(0);
 		}
 	}
 </style>

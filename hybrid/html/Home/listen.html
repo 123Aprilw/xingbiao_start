@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>英语听力学习</title>
+		 <script src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "PingFang SC", sans-serif;
+				background: #fff;
+				width: 100vw;
+				height: 100vh;
+				overflow: hidden;
+			}
+
+			.listen {
+				width: 100%;
+				height: 100vh;
+				display: flex;
+				flex-direction: column;
+				padding: 20px;
+			}
+
+			.back_top {
+				margin-top: 20px;
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+			}
+
+			.p1 {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.text_back,
+			.cinese,
+			.seting,
+			.start {
+				cursor: pointer;
+			}
+
+			.text_back {
+				width: 16px;
+				height: 16px;
+			}
+
+			.imge {
+				display: flex;
+				align-items: center;
+				gap: 20px;
+			}
+
+			.cinese,
+			.seting {
+				width: 22px;
+				height: 22px;
+			}
+
+			.start {
+				width: 70px;
+				height: 70px;
+			}
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+
+			.proess {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.progress-container {
+				width: 85%;
+				height: 11px;
+				background: #f0f0f0;
+				border-radius: 20px;
+				overflow: hidden;
+			}
+
+			.progress-fill {
+				height: 100%;
+				background: rgba(250, 218, 64, 1);
+				transition: width 0.3s;
+			}
+
+			.swiper {
+				flex: 1;
+				margin-top: 20px;
+			}
+
+			.swiper-box {
+				width: 100%;
+				height: 100%;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.swiper-wrapper {
+				display: flex;
+				width: 100%;
+				height: 100%;
+				transition: transform 0.5s;
+			}
+
+			.swiper-item {
+				min-width: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 20px;
+			}
+
+			.imgs_text {
+				width: 100%;
+				height: 220px;
+				border-radius: 20px;
+				overflow: hidden;
+				background: #f0f0f0;
+			}
+
+			.imgs_text img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+			}
+
+			.text_area {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 10px;
+				text-align: center;
+			}
+
+			.text_area text {
+				font-size: var(--word-font-size, 30px);
+				color: #000;
+			}
+
+			.radio {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 30px;
+				padding-bottom: 40px;
+			}
+
+			.process {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				position: fixed;
+				top: 0;
+				right: 0;
+				left: 0;
+				background-color: rgba(0, 0, 0, 0.25);
+				z-index: 999;
+			}
+
+			.box {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				gap: 38px;
+				width: 90%;
+				max-width: 590px;
+			}
+
+			.box-top {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				gap: 20px;
+				padding: 24px;
+				border-radius: 24px;
+				background-color: #fff;
+			}
+
+			.box-top text {
+				font-family: PingFang SC;
+				font-weight: 400;
+				font-size: 14px;
+				color: rgba(0, 0, 0, 1);
+			}
+
+			.box-center,
+			.box_bottom,
+			.swiper_sl,
+			.langese {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			input[type="range"] {
+				-webkit-appearance: none;
+				width: 172px;
+				height: 4px;
+				background: #f0f0f0;
+				border-radius: 4px;
+				outline: none;
+			}
+
+			input[type="range"]::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				background: #fada40;
+				cursor: pointer;
+			}
+
+			.switch {
+				width: 50px;
+				height: 30px;
+				background: #ccc;
+				border-radius: 15px;
+				position: relative;
+				cursor: pointer;
+			}
+
+			.switch::after {
+				content: "";
+				width: 26px;
+				height: 26px;
+				background: white;
+				border-radius: 50%;
+				position: absolute;
+				top: 2px;
+				left: 2px;
+				transition: 0.2s;
+			}
+
+			.switch.on {
+				background: #ffcc33;
+			}
+
+			.switch.on::after {
+				left: 22px;
+			}
+
+			.box-bottom {
+				display: flex;
+				gap: 30px;
+			}
+
+			.close,
+			.ensure {
+				padding: 12px 40px;
+				border-radius: 35px;
+				font-size: 14px;
+				font-weight: 500;
+				cursor: pointer;
+			}
+
+			.close {
+				background: #f2f2f2;
+				color: #aaa;
+			}
+
+			.ensure {
+				background: #fada40;
+				color: #000;
+			}
+
+			/* ====================== 完成学习彩蛋页面 ====================== */
+			.finish-container {
+				width: 100%;
+				min-height: 100vh;
+				background: #fff;
+				display: none;
+				flex-direction: column;
+				align-items: center;
+				position: relative;
+				overflow: hidden;
+				padding-top: 120px;
+			}
+
+			.top-area {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				position: relative;
+			}
+
+			.decoration {
+				position: absolute;
+				opacity: 0;
+			}
+
+			.decoration img {
+				width: 100%;
+				height: 100%;
+			}
+
+			/* 左侧装饰 */
+			.left-item-1 {
+				width: 310px;
+				height: 68px;
+				border-radius: 100px;
+				top: 420px;
+				left: -250px;
+				transform: rotate(160deg);
+				background: linear-gradient(90deg, #fa6300 0%, #fa505f 100%);
+				animation: slideInLeft1 1s ease-out forwards;
+				animation-delay: 0.1s;
+			}
+
+			.left-item-2 {
+				width: 54px;
+				height: 54px;
+				border-radius: 50%;
+				background: rgba(58, 232, 244, 1);
+				top: 150px;
+				left: -80px;
+				animation: slideInLeft2 1s ease-out forwards;
+				animation-delay: 0.3s;
+			}
+
+			/* 右侧装饰 */
+			.right-item-1 {
+				width: 240px;
+				height: 80px;
+				top: 50px;
+				right: -240px;
+				animation: slideInRight1 1s ease-out forwards;
+				animation-delay: 0.2s;
+			}
+
+			.right-item-2 {
+				width: 310px;
+				height: 68px;
+				top: 240px;
+				right: -300px;
+				transform: rotate(160deg);
+				border-radius: 100px;
+				background: linear-gradient(90deg, #3ae3f2 0%, #33e4f2 100%);
+				animation: slideInRight2 1s ease-out forwards;
+				animation-delay: 0.4s;
+			}
+
+			.right-item-3 {
+				width: 54px;
+				height: 54px;
+				border-radius: 50%;
+				background: linear-gradient(180deg, #3ae8f4 0%, #74fec6 100%);
+				top: 400px;
+				right: -120px;
+				animation: slideInRight3 1s ease-out forwards;
+				animation-delay: 0.5s;
+			}
+
+			/* 奖杯 */
+			.trophy {
+				width: 316px;
+				height: 356px;
+				opacity: 0;
+				animation: trophyAppear 1.2s ease-out forwards;
+				animation-delay: 0.6s;
+				margin-top: 40px;
+			}
+
+			/* 文字渐变 */
+			.finish-text {
+				margin-top: 40px;
+				font-size: 48px;
+				background: linear-gradient(89.11deg,
+						#fd51ff 0%,
+						#949af2 38.34%,
+						#24efe0 64.93%,
+						#39f6b1 83.33%,
+						#dff561 106.34%);
+				font-weight: 600;
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+				opacity: 0;
+				animation: fadeIn 1.2s ease-out forwards;
+				animation-delay: 0.8s;
+				text-align: center;
+				padding: 0 20px;
+			}
+
+			/* 按钮 */
+			.finish-btn {
+				position: fixed;
+				bottom: 120px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 528px;
+				max-width: 80%;
+				height: 100px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+				font-weight: 500;
+				font-size: 28px;
+				color: #000;
+				border-radius: 50px;
+				background: #fada40;
+				cursor: pointer;
+				z-index: 10;
+			}
+
+			/* 动画 */
+			@keyframes slideInLeft1 {
+				from {
+					left: -240px;
+					opacity: 0;
+				}
+
+				to {
+					left: -120px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideInLeft2 {
+				from {
+					left: -80px;
+					opacity: 0;
+				}
+
+				to {
+					left: 80px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideInRight1 {
+				from {
+					right: -240px;
+					opacity: 0;
+				}
+
+				to {
+					right: 120px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideInRight2 {
+				from {
+					right: -300px;
+					opacity: 0;
+				}
+
+				to {
+					right: -100px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes slideInRight3 {
+				from {
+					right: -200px;
+					opacity: 0;
+				}
+
+				to {
+					right: 120px;
+					opacity: 1;
+				}
+			}
+
+			@keyframes trophyAppear {
+				from {
+					opacity: 0;
+					transform: scale(0.5) rotate(-10deg);
+				}
+
+				to {
+					opacity: 1;
+					transform: scale(1) rotate(0deg);
+				}
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+
+				to {
+					opacity: 1;
+				}
+			}
+
+			/* 响应式 */
+			@media (max-width: 768px) {
+
+				.left-item-1,
+				.right-item-2 {
+					width: 40vw;
+					height: 8vw;
+				}
+
+				.left-item-2,
+				.right-item-3 {
+					width: 7vw;
+					height: 7vw;
+				}
+
+				.trophy {
+					width: 45vw;
+					height: 50vw;
+				}
+
+				.finish-text {
+					font-size: 6vw;
+				}
+
+				.finish-btn {
+					height: 13vw;
+					font-size: 4vw;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- ====================== 原听力学习页面 ====================== -->
+		<div class="listen" id="studyPage">
+			<div class="back_top">
+				<div class="p1">
+					<div class="text_back" onclick="goBack()">
+						<img src="../imgs/left.png" alt="返回" />
+					</div>
+					<div class="imge">
+						<div class="cinese" onclick="toggleChinese()">
+							<img id="langImg" src="../imgs/English.png" alt="中英切换" />
+						</div>
+						<div class="seting" onclick="openSettings()">
+							<img src="../imgs/Settting.png" alt="设置" />
+						</div>
+					</div>
+				</div>
+
+				<div class="proess">
+					<div class="progress-container">
+						<div id="progressFill" class="progress-fill" style="width: 12.5%"></div>
+					</div>
+					<span id="progressText">1/8</span>
+				</div>
+			</div>
+
+			<div class="swiper">
+				<div class="swiper-box">
+					<div id="swiperWrapper" class="swiper-wrapper"></div>
+				</div>
+			</div>
+
+			<div class="radio">
+				<div class="start" onclick="togglePlay()">
+					<img id="playImg" src="../imgs/ready.png" alt="播放" />
+				</div>
+			</div>
+		</div>
+
+		<!-- ====================== 设置弹窗 ====================== -->
+		<div id="settingsModal" class="process" style="display: none">
+			<div class="box">
+				<div class="box-top">
+					<text style="text-align: center; font-size: 18px">听学设置</text>
+					<div class="box-center">
+						<text>字体大小</text>
+						<input type="range" id="fontSlider" min="0" max="100" value="50" step="50" />
+						<text id="fontSizeLabel">中</text>
+					</div>
+					<div class="box_bottom">
+						<text>播放语速</text>
+						<input type="range" id="speedSlider" min="0.5" max="1.5" step="0.1" value="1" />
+						<text id="speedLabel">1.0X</text>
+					</div>
+					<div class="swiper_sl">
+						<text>自动翻页</text>
+						<div id="autoSwitch" class="switch"></div>
+					</div>
+				</div>
+				<div class="box-bottom">
+					<div class="close" onclick="closeSettings()">关闭</div>
+					<div class="ensure" onclick="saveSettings()">确定</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ====================== 完成学习彩蛋页面 ====================== -->
+		<div class="finish-container" id="finishPage">
+			<div class="top-area">
+				<div class="decoration left-item-1"></div>
+				<div class="decoration left-item-2">
+					<img src="../imgs/lefttop.png" alt="" />
+				</div>
+
+				<div class="trophy">
+					<img src="../imgs/cap.png" alt="" />
+				</div>
+
+				<div class="decoration right-item-1">
+					<img src="../imgs/righttop.png" alt="" />
+				</div>
+				<div class="decoration right-item-2"></div>
+				<div class="decoration right-item-3"></div>
+
+				<div class="finish-text" id="finishText"></div>
+			</div>
+			<div class="finish-btn" onclick="goBackToStudy()">返回继续学习</div>
+		</div>
+		<script>
+			// 全局存储 token
+			window.appToken = null;
+
+			// 接收 App 发来的 token
+			window.receiveTokenFromApp = function(token) {
+				console.log("✅ 收到 App token：", token);
+				window.appToken = token;
+
+				// 拿到 token 后才启动业务逻辑
+				startAppAfterGetToken();
+			};
+
+			// H5 加载后 → 向 APP 要 token
+			document.addEventListener('UniAppJSBridgeReady', function() {
+				console.log("✅ H5 已连接 App");
+				uni.postMessage({
+					data: {
+						action: "GET_TOKEN"
+					}
+				});
+			});
+		</script>
+		<script type="module">
+			import {
+				playTTS,
+				stopTTS
+			} from "../utils/tts.js";
+			import {
+				getBookListen
+			} from "../utils/api.js";
+
+			const baseUrl = "https://xingbiao.demo.zhongti-group.com";
+
+			let sentences = [];
+
+			let currentIndex = 0;
+			let isPlaying = false;
+			let showChinese = false;
+			let autoPlayEnabled = false;
+			let fontSize = "中";
+			let speedValue = 1.0;
+
+			// 停止播放
+			function stopTTSHandler() {
+				stopTTS();
+				isPlaying = false;
+				document.getElementById("playImg").src = "../imgs/ready.png";
+			}
+
+			// 使用封装的 TTS 播放
+			async function speak(text, isEnglish = true) {
+				stopTTSHandler();
+				isPlaying = true;
+				document.getElementById("playImg").src = "../imgs/end.png";
+
+				const lang = isEnglish ? "en" : "zh";
+				try {
+					await playTTS(text, {
+						lang,
+						speed: speedValue
+					});
+					isPlaying = false;
+					document.getElementById("playImg").src = "../imgs/ready.png";
+				} catch (e) {
+					console.error("TTS 播放失败:", e);
+					isPlaying = false;
+					document.getElementById("playImg").src = "../imgs/ready.png";
+				}
+			}
+
+			// 播放当前
+			async function playCurrent() {
+				if (isPlaying) return;
+				if (currentIndex >= sentences.length) {
+					goToFinishPage();
+					return;
+				}
+				const item = sentences[currentIndex];
+				await speak(item.name, true);
+				if (showChinese && item.chinese) {
+					await new Promise((r) => setTimeout(r, 400));
+					await speak(item.chinese, false);
+				}
+
+				if (autoPlayEnabled) {
+					setTimeout(() => {
+						currentIndex++;
+						if (currentIndex < sentences.length) {
+							// 滑动到下一个
+							const wrapper = document.getElementById("swiperWrapper");
+							wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+							updateUI();
+							playCurrent();
+						} else {
+							goToFinishPage();
+						}
+					}, 600);
+				}
+			}
+
+			function togglePlay() {
+				if (isPlaying) {
+					stopTTSHandler();
+				} else {
+					playCurrent();
+				}
+			}
+
+			function toggleChinese() {
+				showChinese = !showChinese;
+				// 更新所有中文显示
+				const allChineseTexts = document.querySelectorAll(
+					'[id^="chineseText-"]',
+				);
+				allChineseTexts.forEach((el, idx) => {
+					el.style.display =
+						idx === currentIndex ? (showChinese ? "block" : "none") : "none";
+				});
+			}
+
+			function openSettings() {
+				document.getElementById("settingsModal").style.display = "flex";
+			}
+
+			function closeSettings() {
+				document.getElementById("settingsModal").style.display = "none";
+			}
+
+			function applyFontSize() {
+				let size = {
+					小: 20,
+					中: 30,
+					大: 40
+				} [fontSize] || 30;
+				document.documentElement.style.setProperty(
+					"--word-font-size",
+					size + "px",
+				);
+			}
+
+			const fontSlider = document.getElementById("fontSlider");
+			fontSlider.addEventListener("input", () => {
+				const map = {
+					0: "小",
+					50: "中",
+					100: "大"
+				};
+				fontSize = map[fontSlider.value];
+				document.getElementById("fontSizeLabel").innerText = fontSize;
+			});
+
+			const speedSlider = document.getElementById("speedSlider");
+			speedSlider.addEventListener("input", () => {
+				speedValue = parseFloat(speedSlider.value).toFixed(1);
+				document.getElementById("speedLabel").innerText = speedValue + "X";
+			});
+
+			const autoSwitch = document.getElementById("autoSwitch");
+			autoSwitch.onclick = () => {
+				autoSwitch.classList.toggle("on");
+				autoPlayEnabled = autoSwitch.classList.contains("on");
+			};
+
+			function saveSettings() {
+				closeSettings();
+				applyFontSize();
+			}
+
+			function goBack() {
+				window.history.back();
+			}
+
+			// ====================== 跳转到完成页面 ======================
+			function goToFinishPage() {
+				document.getElementById("studyPage").style.display = "none";
+				document.getElementById("finishPage").style.display = "flex";
+
+				// 自动识别学习类型文字
+				const type = 1;
+				let typeText = "";
+				if (type === 1) typeText = "学习听";
+				else if (type === 2) typeText = "学习单词";
+				else if (type === 3) typeText = "学习读";
+				else if (type === 4) typeText = "看词识图";
+				else if (type === 5) typeText = "看图识词";
+				else if (type === 6) typeText = "看词翻译";
+				else typeText = "中英语匹配";
+
+				document.getElementById("finishText").innerText =
+					`恭喜您完成${typeText}学习`;
+			}
+
+			// 返回学习页
+			function goBackToStudy() {
+				location.reload();
+			}
+
+			// window.onload = async function() {
+			// 	applyFontSize();
+			// 	try {
+			// 		// 这里可以根据需要传入 code 和 source 参数
+			// 		const data = await getBookListen("default", "wechat");
+			// 		if (data && data.list && data.list.length > 0) {
+			// 			// 转换数据格式
+			// 			sentences = data.list.map((item) => ({
+			// 				name: item.title,
+			// 				chinese: item.content,
+			// 				coverImage: item.cover_image,
+			// 			}));
+			// 			renderSwipers();
+			// 			updateUI();
+			// 		}
+			// 	} catch (err) {
+			// 		console.error("获取数据失败:", err);
+			// 		// 加载失败时使用默认数据
+			// 		sentences = [{
+			// 				name: "This swimsuit",
+			// 				chinese: "这件泳衣"
+			// 			},
+			// 			{
+			// 				name: "forget to do sth",
+			// 				chinese: "忘记去做某事"
+			// 			},
+			// 			{
+			// 				name: "rub",
+			// 				chinese: "粘贴"
+			// 			},
+			// 			{
+			// 				name: "go shopping",
+			// 				chinese: "去购物"
+			// 			},
+			// 			{
+			// 				name: "I like swimming",
+			// 				chinese: "我喜欢游泳"
+			// 			},
+			// 			{
+			// 				name: "at the lake",
+			// 				chinese: "在湖边"
+			// 			},
+			// 			{
+			// 				name: "catch fish",
+			// 				chinese: "抓鱼"
+			// 			},
+			// 			{
+			// 				name: "have fun",
+			// 				chinese: "玩得开心"
+			// 			},
+			// 		];
+			// 		renderSwipers();
+			// 		updateUI();
+			// 	}
+			// };
+
+			// 渲染轮播图
+			function renderSwipers() {
+				const wrapper = document.getElementById("swiperWrapper");
+				wrapper.innerHTML = "";
+				sentences.forEach((item, index) => {
+					const slide = document.createElement("div");
+					slide.className = "swiper-item";
+					slide.innerHTML = `
+            <div class="imgs_text">
+              <img src="${item.coverImage ? baseUrl + item.coverImage : "https://picsum.photos/600/400?random=" + index}" alt="配图" />
+            </div>
+            <div class="text_area">
+              <text id="wordText-${index}">${item.name}</text>
+              <text id="chineseText-${index}" style="display: none">${item.chinese}</text>
+            </div>
+          `;
+					wrapper.appendChild(slide);
+				});
+			}
+
+			function updateUI() {
+				const item = sentences[currentIndex];
+				document.getElementById("progressFill").style.width =
+					((currentIndex + 1) / sentences.length) * 100 + "%";
+				document.getElementById("progressText").innerText =
+					`${currentIndex + 1}/${sentences.length}`;
+
+				// 更新当前显示的文字
+				const allWordTexts = document.querySelectorAll('[id^="wordText-"]');
+				const allChineseTexts = document.querySelectorAll(
+					'[id^="chineseText-"]',
+				);
+				allWordTexts.forEach((el, idx) => {
+					el.style.display = idx === currentIndex ? "block" : "none";
+				});
+				allChineseTexts.forEach((el, idx) => {
+					el.style.display =
+						idx === currentIndex ? (showChinese ? "block" : "none") : "none";
+				});
+			}
+		</script>
+	</body>
+</html>

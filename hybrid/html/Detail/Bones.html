@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学习完成</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #ffffff;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .Bones-contair {
+        margin-top: 9rem;
+        width: 100vw;
+        min-height: 100vh;
+        background: #ffffff;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* 顶部动画区域 */
+      .top-area {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 3rem;
+        position: relative;
+      }
+
+      /* 装饰元素基础样式 */
+      .decoration {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .decoration img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* 左侧元素 */
+      .left-item-1 {
+        width: 9.5rem;
+        height: 2.1rem;
+        border-radius: 100px;
+        top: 13rem;
+        left: -7.5rem;
+        transform: rotate(160deg);
+        background: linear-gradient(90deg, #fa6300 0%, #fa505f 100%);
+        animation: slideInLeft1 1s ease-out forwards;
+        animation-delay: 0.1s;
+      }
+
+      .left-item-2 {
+        width: 1.65rem;
+        height: 1.65rem;
+        border-radius: 50%;
+        background: rgba(58, 232, 244, 1);
+        top: 4.5rem;
+        left: -2.4rem;
+        animation: slideInLeft2 1s ease-out forwards;
+        animation-delay: 0.3s;
+      }
+
+      /* 右侧元素 */
+      .right-item-1 {
+        width: 7.5rem;
+        height: 3.0rem;
+        top: 1.5rem;
+        right: -7.5rem;
+        animation: slideInRight1 1s ease-out forwards;
+        animation-delay: 0.2s;
+      }
+
+      .right-item-2 {
+        width: 9.5rem;
+        height: 2.1rem;
+        top: 7.5rem;
+        right: -9rem;
+        transform: rotate(160deg);
+        border-radius: 100px;
+        background: linear-gradient(90deg, #3ae3f2 0%, #33e4f2 100%);
+        animation: slideInRight2 1s ease-out forwards;
+        animation-delay: 0.4s;
+      }
+
+      .right-item-3 {
+        width: 1.65rem;
+        height: 1.65rem;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #3ae8f4 0%, #74fec6 100%);
+        top: 12.5rem;
+        right: -3.5rem;
+        animation: slideInRight3 1s ease-out forwards;
+        animation-delay: 0.5s;
+      }
+
+      /* 奖杯 */
+      .trophy {
+        width: 9.8rem;
+        height: 11rem;
+        opacity: 0;
+        animation: trophyAppear 1.2s ease-out forwards;
+        animation-delay: 0.6s;
+        margin-top: 1.2rem;
+      }
+
+      .trophy img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* 文字渐变 */
+      .text {
+        margin-top: 1.2rem;
+        font-size: 1.5rem;
+        background: linear-gradient(
+          89.11deg,
+          #fd51ff 0%,
+          #949af2 38.34%,
+          #24efe0 64.93%,
+          #39f6b1 83.33%,
+          #dff561 106.34%
+        );
+        font-weight: 600;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        opacity: 0;
+        animation: fadeIn 1.2s ease-out forwards;
+        animation-delay: 0.8s;
+        text-align: center;
+        padding: 0 1rem;
+      }
+
+      /* 底部按钮 */
+      .btn {
+        position: fixed;
+        bottom: 7.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 16.2rem;
+        height: 3rem;
+        box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+        font-weight: 500;
+        font-size: 0.85rem;
+        color: #000;
+        border-radius: 5rem;
+        background: rgba(250, 218, 64, 1);
+        z-index: 10;
+        cursor: pointer;
+        border: none;
+        outline: none;
+      }
+
+      /* 动画 */
+      @keyframes slideInLeft1 {
+        from {
+          left: -7.5rem;
+          opacity: 0;
+        }
+        to {
+          left: -3.8rem;
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInLeft2 {
+        from {
+          left: -2.4rem;
+          opacity: 0;
+        }
+        to {
+          left: 2.4rem;
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInRight1 {
+        from {
+          right: -7.5rem;
+          opacity: 0;
+        }
+        to {
+          right: 3.5rem;
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInRight2 {
+        from {
+          right: -9rem;
+          opacity: 0;
+        }
+        to {
+          right: -3rem;
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInRight3 {
+        from {
+          right: -6rem;
+          opacity: 0;
+        }
+        to {
+          right: 3.5rem;
+          opacity: 1;
+        }
+      }
+
+      @keyframes trophyAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.5) rotate(-10deg);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1) rotate(0deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="Bones-contair">
+      <!-- 顶部动画区域 -->
+      <div class="top-area">
+        <div class="decoration left-item-1"></div>
+        <div class="decoration left-item-2">
+          <img src="../imgs/lefttop.png" alt="" />
+        </div>
+
+        <div class="trophy">
+          <img src="../imgs/cap.png" alt="" />
+        </div>
+
+        <div class="decoration right-item-1">
+          <img src="../imgs/righttop.png" alt="" />
+        </div>
+        <div class="decoration right-item-2"></div>
+        <div class="decoration right-item-3"></div>
+
+        <div class="text" id="text"></div>
+      </div>
+
+      <button class="btn" onclick="goDetail()">返回继续学习</button>
+    </div>
+
+    <script>
+      // 获取地址栏参数
+      function getUrlParam(name) {
+        const reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        const r = window.location.search.substr(1).match(reg);
+        if (r != null) return decodeURIComponent(r[2]);
+        return null;
+      }
+
+      // 页面加载
+      window.onload = function () {
+        const id = getUrlParam("id");
+        const type = Number(getUrlParam("type"));
+        const textEl = document.getElementById("text");
+
+        // 文字逻辑和你原来完全一致
+        let text = "";
+        switch (type) {
+          case 1:
+            text = "学习听";
+            break;
+          case 2:
+            text = "学习单词";
+            break;
+          case 3:
+            text = "学习读";
+            break;
+          case 4:
+            text = "看词识图";
+            break;
+          case 5:
+            text = "看图识词";
+            break;
+          case 6:
+            text = "看词翻译";
+            break;
+          default:
+            text = "中英语匹配";
+        }
+        textEl.innerText = "恭喜您完成" + text + "学习";
+
+        // 存储ID用于跳转
+        window.bookId = id;
+      };
+
+      // 跳转详情
+      function goDetail() {
+        location.href = '../Home/Home.html?id=${window.bookId}';
+      }
+    </script>
+  </body>
+</html>

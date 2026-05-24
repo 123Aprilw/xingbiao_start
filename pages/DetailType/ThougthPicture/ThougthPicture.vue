@@ -17,7 +17,7 @@
 		list : Question[]
 		quiz_token : string
 	}
-	const lever_list = ref()
+	const lever_list = ref('')
 	const BooksId = ref<number>(0)
 	const originalTotal = ref(0)
 	const wrongIds = ref<number[]>([])
@@ -29,12 +29,19 @@
 	let isProps = ref({ show: false, status: 0, name: '' })
 	let selectedIndex = ref<number>(-1)
 	let SwiperData = ref<ApiResponse>({ count: 0, list: [], quiz_token: '' })
-
+	const GLOBAL_KEY = "LEARN_STATUS_FINISHED"
 	// ✅ 修复：重刷模式下，只渲染错题列表
 	const redoQuestions = computed(() => {
 		return SwiperData.value.list.filter(item => wrongIds.value.includes(item.id))
 	})
-
+	const saveGlobalFinish = () => {
+		try {
+			uni.setStorageSync(GLOBAL_KEY, true)
+			console.log("✅ 全局完成状态已保存 —— 首页图标变黄")
+		} catch (e) {
+			console.error("存储失败", e)
+		}
+	}
 	const currentQuestion = computed(() => {
 		if (pageStatus.value === 'redoing') {
 			return redoQuestions.value[wrongCurrentIndex.value] || null
@@ -136,6 +143,7 @@
 					pageStatus.value = 'review'
 				} else {
 					// 全对 → 直接提交并跳转
+					saveGlobalFinish()
 					await submitResult()
 					uni.navigateTo({ url: `/pages/Bones/Bones?id=${BooksId.value}` })
 				}
@@ -147,6 +155,7 @@
 			if (wrongCurrentIndex.value < redoQuestions.value.length - 1) {
 				wrongCurrentIndex.value++
 			} else {
+				saveGlobalFinish()
 				await submitResult()
 				uni.navigateTo({ url: `/pages/Bones/Bones?id=${BooksId.value}&lever=${lever_list.value}` })
 			}

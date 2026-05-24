@@ -63,6 +63,8 @@
 	import { LookWorld, PostLookWorld } from '@/utils/api.ts'
 	import { playTTS, stopTTS, destroyTTS } from '@/utils/tts.ts'
 	//
+	const GLOBAL_KEY = "LEARN_STATUS_FINISHED"
+	let lever_list = ref<string>('')
 	const BooksId = ref<number>(0)
 	// 核心进度逻辑
 	const originalTotal = ref(0)
@@ -77,7 +79,14 @@
 	let selectedIndex = ref<number>(-1)
 	let SwiperData = ref<ApiTs>({ count: 0, list: [], quiz_token: '' })
 	const playing = ref(false)
-
+	const saveGlobalFinish = () => {
+		try {
+			uni.setStorageSync(GLOBAL_KEY, true)
+			console.log("✅ 全局完成状态已保存 —— 首页图标变黄")
+		} catch (e) {
+			console.error("存储失败", e)
+		}
+	}
 	// 当前题目
 	const currentQuestion = computed(() => {
 		if (pageStatus.value === 'redoing') {
@@ -159,9 +168,10 @@
 			} else {
 				// 第一次全部正确 → 直接跳菜单
 				if (wrongIds.value.length === 0) {
+					saveGlobalFinish()
 					submitResult()
 					uni.navigateTo({
-						url: `/pages/Bones/Bones?id=${BooksId.value}` // 你的菜单页面路径
+						url: `/pages/Bones/Bones?id=${BooksId.value}&lever=${lever_list.value}` // 你的菜单页面路径
 					})
 				} else {
 					pageStatus.value = 'review'
@@ -175,8 +185,9 @@
 			// 1. 先判断是不是已经是最后一题
 			if (wrongCurrentIndex.value >= wrongIds.value.length - 1) {
 				// 所有错题都刷完了 → 直接跳菜单
+				saveGlobalFinish()
 				submitResult()
-				uni.navigateTo({ url: `/pages/Bones/Bones?id=${BooksId.value}` })
+				uni.navigateTo({ url: `/pages/Bones/Bones?id=${BooksId.value}&lever=${lever_list.value}` })
 			} else {
 				// 还有下一题 → 继续
 				wrongCurrentIndex.value++
@@ -226,7 +237,7 @@
 			}
 			console.log(params)
 			const res = await PostLookWorld(params.quizToken, params.bookId, params.errorIds, params.Source)
-			console.log('提交成功',res)
+			console.log('提交成功', res)
 			// 提交成功后跳转菜单页面
 			uni.navigateTo({ url: "/pages/menu/menu" })
 		} catch (err) {
@@ -235,6 +246,7 @@
 		}
 	}
 	onLoad((e) => {
+		lever_list.value = e.lever
 		BooksId.value = e.id
 		console.log(BooksId.value)
 		FetchWiper(Number(e.id), Number(e.type))

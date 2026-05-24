@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>看图识词</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      :root {
+        font-size: 13px;
+      }
+
+      @media (min-width: 375px) {
+        :root {
+          font-size: 15px;
+        }
+      }
+      @media (min-width: 414px) {
+        :root {
+          font-size: 16px;
+        }
+      }
+      @media (min-width: 768px) {
+        :root {
+          font-size: 24px;
+        }
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: #fff;
+        color: #000;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .listen {
+        padding-top: calc(env(safe-area-inset-top) + 2.8rem);
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .back_top {
+        display: flex;
+        flex-direction: column;
+        gap: 1.1rem;
+        padding: 0.6rem;
+        flex-shrink: 0;
+      }
+
+      .back_top .p1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .text_back {
+        width: 1rem;
+        height: 1rem;
+        cursor: pointer;
+      }
+
+      .text_back img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .proess {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      progress {
+        height: 0.7rem;
+        border-radius: 0.6rem;
+        width: 19rem;
+        appearance: none;
+        border: none;
+      }
+
+      progress::-webkit-progress-bar {
+        background: #f1f1f1;
+        border-radius: 0.6rem;
+      }
+
+      progress::-webkit-progress-value {
+        background: rgba(250, 218, 64, 1);
+        border-radius: 0.6rem;
+      }
+
+      .swiper {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+      }
+
+      .swiper_box {
+        width: 100%;
+        height: 28rem;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .swiper-container {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .swiper-wrapper {
+        height: 100%;
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+
+      .swiper-item {
+        width: 100%;
+        height: 100%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.6rem;
+        gap: 0.9rem;
+      }
+
+      .imgs_text {
+        width: 21rem;
+        max-width: 95%;
+        height: 13rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .imgs_text img {
+        width: 100%;
+        height: 100%;
+        border-radius: 0.6rem;
+        object-fit: cover;
+      }
+
+      .imgs_bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        width: 100%;
+      }
+
+      .imags_main {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 22rem;
+        max-width: 95%;
+        height: 3.5rem;
+        border-radius: 0.8rem;
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+        font-size: 1rem;
+        color: #000;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .Punctuator {
+        margin: 0 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 1.6rem;
+        height: 3.5rem;
+        background: rgba(250, 218, 64, 1);
+        font-size: 1rem;
+        color: #000;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 0.6rem;
+      }
+
+      .swiper_box.SwiperBox {
+        height: 23rem !important;
+      }
+
+      .error_box {
+        margin-top: 3rem;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+      }
+
+      .error_egg {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .error_egg span {
+        font-size: 1.1rem;
+        color: #000;
+        margin-top: 0.6rem;
+      }
+
+      .egg_imgs {
+        width: 8rem;
+        height: 8rem;
+      }
+
+      .egg_imgs img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .error_box .Punctuator {
+        margin-top: 15rem;
+        width: 21rem;
+        max-width: 90%;
+        height: 3.5rem;
+      }
+
+      .modal-mask {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+      }
+
+      .modal-content {
+        width: 18rem;
+        max-width: 85%;
+        background: #fff;
+        border-radius: 0.8rem;
+        padding: 1.2rem;
+        text-align: center;
+      }
+
+      .modal-btn {
+        margin-top: 1rem;
+        padding: 0.6rem 1.2rem;
+        background: #fada40;
+        border-radius: 1.6rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="listen">
+      <div class="game-page">
+        <div class="back_top">
+          <div class="p1">
+            <div class="text_back" id="backBtn" oncolc>
+              <img src="../imgs/left.png" alt="返回" />
+            </div>
+            <div style="margin-right: 1rem">看图识词</div>
+            <div></div>
+          </div>
+          <div class="proess">
+            <progress id="progress" value="1" max="2"></progress>
+            <span id="progressText">1/2</span>
+          </div>
+        </div>
+
+        <div class="swiper">
+          <div class="swiper_box" id="swiperBox">
+            <div class="swiper-container">
+              <div class="swiper-wrapper" id="swiperWrapper">
+                <!-- 原生JS渲染 -->
+              </div>
+            </div>
+          </div>
+
+          <div class="Punctuator" id="checkBtn">检查</div>
+        </div>
+      </div>
+
+      <div class="error_box" id="reviewPage">
+        <div class="error_egg">
+          <div class="egg_imgs">
+            <img src="/static/logonew.png" alt="logo" />
+          </div>
+          <span>在刷一遍先前失手的项目吧!</span>
+        </div>
+        <div class="Punctuator" id="redoBtn">继续</div>
+      </div>
+
+      <div class="modal-mask" id="modal">
+        <div class="modal-content">
+          <div id="modalText"></div>
+          <div class="modal-btn" id="modalClose">确定</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { playTTS, stopTTS } from '../utils/tts.js'
+
+      // 题目数据
+      const questionData = {
+        type: 1,
+        sliderArr: [
+          {
+            url: "https://picsum.photos/600/600",
+            name: "苹果",
+            bottleArr: [{ name: "苹果" }, { name: "香蕉" }, { name: "橘子" }],
+          },
+          {
+            url: "https://picsum.photos/601/601",
+            name: "狗",
+            bottleArr: [{ name: "猫" }, { name: "狗" }, { name: "兔子" }],
+          },
+        ],
+      };
+
+      // 状态
+      let pageStatus = "normal"; // normal / review / redoing
+      let currentIndex = 0;
+      let selectedIndex = null;
+      let wrongList = [];
+      let redoIndex = 0;
+      let isSpeaking = false;
+
+      // DOM
+      const swiperWrapper = document.getElementById("swiperWrapper");
+      const progress = document.getElementById("progress");
+      const progressText = document.getElementById("progressText");
+      const checkBtn = document.getElementById("checkBtn");
+      const modal = document.getElementById("modal");
+      const modalText = document.getElementById("modalText");
+      const modalClose = document.getElementById("modalClose");
+      const reviewPage = document.getElementById("reviewPage");
+      const gamePage = document.querySelector(".game-page");
+      const redoBtn = document.getElementById("redoBtn");
+      const backBtn = document.getElementById("backBtn");
+
+      // 渲染题目
+      function renderSlides() {
+        swiperWrapper.innerHTML = "";
+        questionData.sliderArr.forEach((item, idx) => {
+          const slide = document.createElement("div");
+          slide.className = "swiper-item";
+          let options = "";
+          item.bottleArr.forEach((opt, i) => {
+            options += `
+            <div class="imags_main" data-idx="${i}" onclick="selectOption(${idx}, ${i}, '${opt.name}')">
+              ${opt.name}
+            </div>
+          `;
+          });
+          slide.innerHTML = `
+          <div class="imgs_text">
+            <img src="${item.url}" alt="">
+          </div>
+          <div class="imgs_bottom">${options}</div>
+        `;
+          swiperWrapper.appendChild(slide);
+        });
+        updateProgress();
+      }
+
+      // 更新进度
+      function updateProgress() {
+        const total = questionData.sliderArr.length;
+        progress.value = currentIndex + 1;
+        progress.max = total;
+        progressText.innerText = `${currentIndex + 1}/${total}`;
+        swiperWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+        selectedIndex = null;
+      }
+
+      // 选择选项
+      window.selectOption = function (slideIdx, optIdx, text) {
+        if (slideIdx !== currentIndex || isSpeaking) return;
+        selectedIndex = optIdx;
+        const all = document.querySelectorAll(
+          `.swiper-item:nth-child(${currentIndex + 1}) .imags_main`,
+        );
+        all.forEach((el, i) => {
+          el.style.background =
+            i === optIdx ? "rgba(250,218,64,1)" : "rgba(255,255,255,0.6)";
+        });
+        speak(text);
+      };
+
+      // 语音朗读
+      async function speak(text) {
+        isSpeaking = true;
+        try {
+          await playTTS(text, { lang: 'zh' });
+        } catch (e) {
+          console.error('TTS 播放失败:', e);
+        }
+        isSpeaking = false;
+      }
+
+      function stopSpeak() {
+        stopTTS();
+        isSpeaking = false;
+      }
+
+      // 检查答案
+      checkBtn.onclick = function () {
+        if (selectedIndex === null) return;
+        const item = questionData.sliderArr[currentIndex];
+        const right = item.bottleArr[selectedIndex].name === item.name;
+        if (!right && !wrongList.includes(currentIndex))
+          wrongList.push(currentIndex);
+        modalText.innerHTML = right
+          ? "✅ 回答正确"
+          : `❌ 回答错误<br>正确答案：${item.name}`;
+        modal.style.display = "flex";
+      };
+
+      // 关闭弹窗 → 下一题
+      modalClose.onclick = function () {
+        modal.style.display = "none";
+        nextQuestion();
+      };
+
+      // 下一题
+      function nextQuestion() {
+        stopSpeak();
+        const total = questionData.sliderArr.length;
+        if (pageStatus === "normal") {
+          if (currentIndex < total - 1) {
+            currentIndex++;
+            updateProgress();
+          } else {
+            if (wrongList.length > 0) {
+              gamePage.style.display = "none";
+              reviewPage.style.display = "flex";
+              pageStatus = "review";
+            } else {
+              alert("学习完成！");
+            }
+          }
+        } else if (pageStatus === "redoing") {
+          redoIndex++;
+          if (redoIndex < wrongList.length) {
+            currentIndex = wrongList[redoIndex];
+            updateProgress();
+          } else {
+            alert("错题练习完成！");
+          }
+        }
+      }
+
+      // 开始重做
+      redoBtn.onclick = function () {
+        pageStatus = "redoing";
+        redoIndex = 0;
+        currentIndex = wrongList[0];
+        reviewPage.style.display = "none";
+        gamePage.style.display = "block";
+        updateProgress();
+      };
+
+      // 返回
+      backBtn.onclick = function () {
+        stopSpeak();
+        history.back();
+      };
+
+      // 初始化
+      window.onload = function () {
+        renderSlides();
+      };
+    </script>
+  </body>
+</html>

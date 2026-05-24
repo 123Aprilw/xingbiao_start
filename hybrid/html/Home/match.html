@@ -1,0 +1,1026 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>中英文配对</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            overflow-x: hidden;
+        }
+
+        .listen {
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: #fff;
+        }
+
+        .back_top {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(8px, 2vw, 16px);
+            padding: clamp(24px, 12vw, 60px) clamp(8px, 4vw, 30px) clamp(8px, 4vw, 30px);
+            flex-shrink: 0;
+        }
+
+        .back_top .p1 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(16px, 5vw, 32px);
+        }
+
+        .text_back {
+            width: clamp(16px, 4vw, 24px);
+            height: clamp(16px, 4vw, 24px);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .text_back img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .proess {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: clamp(8px, 2vw, 16px);
+        }
+
+        progress {
+            flex: 1;
+            height: clamp(12px, 4vw, 20px);
+            border-radius: clamp(12px, 4vw, 20px);
+            appearance: none;
+        }
+
+        progress::-webkit-progress-bar {
+            background-color: #f1f1f1;
+            border-radius: clamp(12px, 4vw, 20px);
+        }
+
+        progress::-webkit-progress-value {
+            background-color: rgba(250, 218, 64, 1);
+            border-radius: clamp(12px, 4vw, 20px);
+        }
+
+        .list_top {
+            flex: 1;
+            background-color: rgba(245, 246, 250, 1);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(24px, 6vw, 40px);
+            padding: clamp(8px, 4vw, 30px);
+        }
+
+        .matching-container {
+            display: flex;
+            justify-content: space-between;
+            gap: clamp(12px, 3vw, 24px);
+            width: 100%;
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(12px, 3vw, 24px);
+        }
+
+        .center_box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            aspect-ratio: 344/120;
+            border-radius: clamp(12px, 6vw, 24px);
+            box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+            background: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            padding: clamp(8px, 2vw, 16px);
+            touch-action: manipulation;
+        }
+
+        .center_box.fade-out {
+            opacity: 0.5;
+            transform: scale(0.95);
+            transition: all 0.3s ease-out;
+        }
+
+        .box_bottom {
+            font-size: clamp(14px, 4.5vw, 24px);
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .isBg {
+            background: rgba(250, 218, 64, 0.2) !important;
+            border: 1px solid rgba(250, 218, 64, 1) !important;
+        }
+
+        .tempGreen {
+            background: #e6f7e6 !important;
+            border: 2px solid #4cd964 !important;
+        }
+
+        .tempGreen .box_bottom {
+            color: #4cd964;
+            font-weight: bold;
+        }
+
+        .tempRed {
+            background: rgba(255, 60, 60, 1) !important;
+            box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+        }
+
+        .tempRed .box_bottom {
+            font-weight: 500;
+            font-size: clamp(16px, 5vw, 28px);
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .locked {
+            background: #f5f5f5 !important;
+            opacity: 0.65;
+            border: 2px solid #eee;
+            pointer-events: none;
+        }
+
+        .locked .box_bottom {
+            color: #999;
+        }
+
+        .Punctuator {
+            margin-top: clamp(16px, 4vw, 32px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: clamp(20px, 10vw, 40px);
+            width: 100%;
+            height: clamp(48px, 16vw, 80px);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+            font-size: clamp(16px, 5vw, 28px);
+            color: rgba(0, 0, 0, 1);
+            transition: all 0.28s ease-out;
+            cursor: pointer;
+        }
+
+        .Punctuator_active {
+            background: rgba(250, 218, 64, 1) !important;
+        }
+
+        .Punctuator:active {
+            transform: scale(0.96);
+            opacity: 0.92;
+        }
+
+        /* ========== 底部弹窗样式 ========== */
+        .loading_bg {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            height: auto;
+            max-height: 50vh;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 9999;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: all 0.7s cubic-bezier(0.2, 0.8, 0.25, 1);
+            background: #fff;
+            border-radius: 30px 30px 0 0;
+            box-shadow: 0px -10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .loading_bg.animate-in {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .modal-content-wrapper {
+            width: 100%;
+            padding: clamp(20px, 5vw, 40px) clamp(20px, 5vw, 40px) clamp(50px, 10vw, 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(16px, 4vw, 24px);
+        }
+        .btn-true {
+            position: absolute;
+            top: clamp(16px, 4vw, 24px);
+            right: clamp(16px, 5vw, 30px);
+            width: clamp(56px, 10vw, 70px);
+            height: clamp(22px, 4vw, 28px);
+            border-radius: 23px;
+            font-weight: 500;
+            font-size: clamp(12px, 3vw, 14px);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .Rewards {
+            width: 100%;
+            text-align: left;
+            font-weight: 500;
+            font-size: clamp(14px, 4vw, 18px);
+            color: #000;
+            padding-left: clamp(16px, 4vw, 20px);
+        }
+        .Rewards_bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(24px, 6vw, 44px);
+            width: 100%;
+        }
+        .Rewards_bottom text {
+            font-weight: 600;
+            font-size: clamp(20px, 6vw, 28px);
+            color: #000;
+            text-align: center;
+        }
+        .Rewards_btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: clamp(180px, 50vw, 260px);
+            border-radius: 25px;
+            height: clamp(40px, 10vw, 50px);
+            background: rgba(250, 218, 64, 1);
+            box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+            cursor: pointer;
+            font-size: clamp(14px, 4vw, 18px);
+        }
+
+        .settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .settings-content {
+            background: #fff;
+            width: 80%;
+            max-width: 500px;
+            border-radius: clamp(12px, 6vw, 24px);
+            padding: clamp(16px, 8vw, 40px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .finish-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            max-width: 750px;
+            margin: 0 auto;
+            background: #fff;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            padding-top: clamp(30px, 8vw, 60px);
+            z-index: 1000;
+        }
+
+        .top-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .decoration {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .decoration img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .left-item-1 {
+            width: clamp(100px, 25vw, 180px);
+            height: clamp(20px, 5vw, 40px);
+            border-radius: 100px;
+            top: clamp(180px, 40vw, 280px);
+            left: clamp(-70px, -18vw, -120px);
+            transform: rotate(160deg);
+            background: linear-gradient(90deg, #fa6300 0%, #fa505f 100%);
+            animation: slideInLeft1 1s ease-out forwards;
+            animation-delay: 0.1s;
+        }
+
+        .left-item-2 {
+            width: clamp(24px, 8vw, 36px);
+            height: clamp(24px, 8vw, 36px);
+            border-radius: 50%;
+            background: rgba(58, 232, 244, 1);
+            top: clamp(60px, 15vw, 100px);
+            left: clamp(-30px, -8vw, -50px);
+            animation: slideInLeft2 1s ease-out forwards;
+            animation-delay: 0.3s;
+        }
+
+        .right-item-1 {
+            width: clamp(80px, 20vw, 150px);
+            height: clamp(30px, 8vw, 55px);
+            top: clamp(20px, 5vw, 30px);
+            right: clamp(-70px, -18vw, -120px);
+            animation: slideInRight1 1s ease-out forwards;
+            animation-delay: 0.2s;
+            z-index: 1;
+        }
+
+        .right-item-2 {
+            width: clamp(100px, 25vw, 180px);
+            height: clamp(20px, 5vw, 40px);
+            top: clamp(100px, 25vw, 160px);
+            right: clamp(-90px, -22vw, -150px);
+            transform: rotate(160deg);
+            background: linear-gradient(90deg, #3ae3f2 0%, #33e4f2 100%);
+            animation: slideInRight2 1s ease-out forwards;
+            animation-delay: 0.4s;
+        }
+
+        .right-item-3 {
+            width: clamp(24px, 9vw, 40px);
+            height: clamp(24px, 9vw, 40px);
+            border-radius: 50%;
+            background: linear-gradient(180deg, #3ae8f4 0%, #74fec6 100%);
+            top: clamp(160px, 38vw, 260px);
+            right: clamp(-40px, -10vw, -70px);
+            animation: slideInRight3 1s ease-out forwards;
+            animation-delay: 0.5s;
+        }
+
+        .trophy {
+            width: clamp(120px, 30vw, 200px);
+            height: clamp(135px, 33vw, 225px);
+            opacity: 0;
+            animation: trophyAppear 1.2s ease-out forwards;
+            animation-delay: 0.6s;
+            margin-top: clamp(10px, 3vw, 20px);
+            z-index: 99;
+        }
+        .trophy img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .finish-text {
+            margin-top: clamp(70px, 10vw, 50px);
+            font-size: clamp(20px, 8vw, 24px);
+            background: linear-gradient(
+                89.11deg,
+                #fd51ff 0%,
+                #949af2 38.34%,
+                #24efe0 64.93%,
+                #39f6b1 83.33%,
+                #dff561 106.34%
+            );
+            font-weight: 600;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            animation: fadeIn 1.2s ease-out forwards;
+            animation-delay: 0.8s;
+            text-align: center;
+            padding: 0 clamp(15px, 5vw, 30px);
+        }
+
+        .finish-btn {
+            position: absolute;
+            bottom: clamp(30px, 8vw, 60px);
+            width: clamp(180px, 55vw, 380px);
+            height: clamp(45px, 10vw, 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px -2px 14px 0px rgba(120, 120, 120, 0.1);
+            font-weight: 500;
+            font-size: clamp(14px, 4vw, 22px);
+            color: #000;
+            border-radius: 50px;
+            background: #fada40;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        @keyframes slideInLeft1 {
+            from {
+                left: clamp(-100px, -25vw, -200px);
+                opacity: 0;
+            }
+            to {
+                left: clamp(-50px, -12vw, -80px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft2 {
+            from {
+                left: clamp(-40px, -10vw, -80px);
+                opacity: 0;
+            }
+            to {
+                left: clamp(25px, 7vw, 40px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight1 {
+            from {
+                right: clamp(-100px, -25vw, -200px);
+                opacity: 0;
+            }
+            to {
+                right: clamp(20px, 5vw, 30px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight2 {
+            from {
+                right: clamp(-120px, -28vw, -220px);
+                opacity: 0;
+            }
+            to {
+                right: clamp(-40px, -10vw, -60px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInRight3 {
+            from {
+                right: clamp(-60px, -15vw, -100px);
+                opacity: 0;
+            }
+            to {
+                right: clamp(35px, 10vw, 60px);
+                opacity: 1;
+            }
+        }
+
+        @keyframes trophyAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.5) rotate(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="listen" id="gamePage">
+        <div class="back_top">
+            <div class="p1">
+                <div class="text_back" onclick="back()">
+                    <img src="../imgs/left.png" alt="" />
+                </div>
+                <span>中英文配对</span>
+                <div onclick="showModel()"></div>
+            </div>
+            <div class="proess">
+                <progress id="progress" max="100"></progress>
+                <span id="pageText">1/2</span>
+            </div>
+        </div>
+
+        <div class="list_top" id="normalPage">
+            <div class="matching-container">
+                <div class="column" id="englishList"></div>
+                <div class="column" id="chineseList"></div>
+            </div>
+            <div class="Punctuator" id="checkBtn" onclick="PunctuatorClick()">
+                检查
+            </div>
+        </div>
+
+        <!-- 修复后的弹窗结构 -->
+        <div id="resultModal" class="loading_bg hidden">
+            <div class="modal-content-wrapper">
+                <div class="btn-true" id="resultStatusBtn">正确</div>
+                <div class="Rewards" id="resultTips">回答的很好</div>
+                <div class="Rewards_bottom">
+                    <text id="resultText">你也太棒了!</text>
+                    <div class="Rewards_btn" onclick="now()">知道啦</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="settingsModal" class="settings-modal hidden">
+            <div class="settings-content">
+                <button onclick="closeValue(false)">关闭</button>
+                <button
+                    onclick="
+                        confirm({ show: false, fontSize: '28rpx', videoChange: '1.0' })
+                    "
+                >
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="finish-container" id="finishPage">
+        <div class="top-area">
+            <div class="decoration left-item-1"></div>
+            <div class="decoration left-item-2"></div>
+            <div class="trophy">
+                <img src="../imgs/cap.png" alt="" />
+            </div>
+            <div class="decoration right-item-1">
+                <img src="../imgs/righttop.png" alt="" />
+            </div>
+            <div class="decoration right-item-2"></div>
+            <div class="decoration right-item-3"></div>
+            <div class="finish-text" id="finishText"></div>
+        </div>
+        <div class="finish-btn" onclick="goBackToStudy()">返回继续学习</div>
+    </div>
+
+    <audio id="audioCorrect" src="../imgs/rading.mp3" preload="auto">
+    <audio id="audioError" src="../imgs/error.mp3" preload="auto">
+
+    <script>
+        let pageStatus = "normal";
+        let wrongList = [];
+        let isFinished = false;
+        let Typeis = 0;
+        let wrongQuestions = [];
+        let redoIndex = 0;
+        let isPressiom = false;
+        let isProps = { show: false, status: 0, name: "" };
+        let IndexCurrent = 0;
+        const pageSize = 1;
+        let totalPages = 1;
+        let BonesId = 0;
+        let showBg = false;
+        let autoPlayEnabled = false;
+        let autoPlayRunning = false;
+        let SwiperArr = null;
+        let showChinese = false;
+        let FontSize = "";
+        let speedValue = 0.5;
+
+        let selectedEnglish = null;
+        let selectedChinese = null;
+        let matchedPairs = [];
+        let tempGreenEng = null;
+        let tempGreenChn = null;
+        let tempRedEng = null;
+        let tempRedChn = null;
+        let isPairing = false;
+
+        let isCheckModal = false;
+
+        const modal = document.getElementById("resultModal");
+        const resultStatusBtn = document.getElementById("resultStatusBtn");
+        const resultTips = document.getElementById("resultTips");
+        const resultText = document.getElementById("resultText");
+        const audioCorrect = document.getElementById("audioCorrect");
+        const audioError = document.getElementById("audioError");
+
+        const leverDetail = [
+            {
+                id: 1,
+                Swiper: [
+                    {
+                        type: 1,
+                        sliderArr: [
+                            {
+                                name: "apple",
+                                bottleArr: [
+                                    { name: "apple" },
+                                    { name: "banana" },
+                                    { name: "pear" },
+                                    { name: "orange" },
+                                    { name: "apple", typeName: "苹果" },
+                                    { name: "banana", typeName: "香蕉" },
+                                    { name: "pear", typeName: "梨" },
+                                    { name: "orange", typeName: "橙子" },
+                                ],
+                            },
+                            {
+                                name: "cat",
+                                bottleArr: [
+                                    { name: "cat" },
+                                    { name: "dog" },
+                                    { name: "bird" },
+                                    { name: "fish" },
+                                    { name: "cat", typeName: "猫" },
+                                    { name: "dog", typeName: "狗" },
+                                    { name: "bird", typeName: "鸟" },
+                                    { name: "fish", typeName: "鱼" },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ];
+
+        function playAudio(isCorrect) {
+            audioCorrect.pause();
+            audioCorrect.currentTime = 0;
+            audioError.pause();
+            audioError.currentTime = 0;
+
+            if (isCorrect) {
+                audioCorrect.play().catch(err => console.error("答对音频失败:", err));
+            } else {
+                audioError.play().catch(err => console.error("答错音频失败:", err));
+            }
+        }
+
+        function goToFinishPage() {
+            document.getElementById("gamePage").style.display = "none";
+            document.getElementById("finishPage").style.display = "flex";
+
+            let typeText = "中英语匹配";
+            document.getElementById("finishText").innerText = `恭喜您完成${typeText}学习`;
+        }
+
+        function goBackToStudy() {
+            location.reload();
+        }
+
+        function updateComputed() {
+            totalPages = SwiperArr?.sliderArr?.length || 1;
+            const currentPage = IndexCurrent + 1;
+            const progressPercent = (currentPage / totalPages) * 100;
+
+            const progressEl = document.getElementById("progress");
+            progressEl.max = 100;
+            progressEl.value = progressPercent;
+
+            document.getElementById("pageText").innerText = `${currentPage}/${totalPages}`;
+
+            const allMatched = matchedPairs.length === 4;
+            const btn = document.getElementById("checkBtn");
+            if (allMatched) {
+                btn.classList.add("Punctuator_active");
+                btn.style.opacity = "1";
+                btn.style.pointerEvents = "auto";
+            } else {
+                btn.classList.remove("Punctuator_active");
+                btn.style.opacity = "0.6";
+                btn.style.pointerEvents = "none";
+            }
+        }
+
+        function getCurrentBottleArr() {
+            if (!SwiperArr?.sliderArr?.[IndexCurrent]?.bottleArr) return [];
+            return SwiperArr.sliderArr[IndexCurrent].bottleArr;
+        }
+
+        function renderList() {
+            const bottleArr = getCurrentBottleArr();
+            const englishList = bottleArr.slice(0, 4);
+            const chineseList = bottleArr.slice(4, 8);
+
+            const engContainer = document.getElementById("englishList");
+            const chnContainer = document.getElementById("chineseList");
+            engContainer.innerHTML = "";
+            chnContainer.innerHTML = "";
+
+            englishList.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "center_box";
+                if (selectedEnglish === index && !isEngLocked(index)) {
+                    div.classList.add("isBg");
+                }
+                if (tempGreenEng === index) {
+                    div.classList.add("tempGreen");
+                }
+                if (tempRedEng === index) {
+                    div.classList.add("tempRed");
+                }
+                if (isEngLocked(index)) {
+                    div.classList.add("locked");
+                }
+                if (isPairing && !isEngLocked(index)) {
+                    div.style.pointerEvents = "none";
+                    div.style.opacity = "0.7";
+                }
+                div.innerHTML = `<div class="box_bottom">${item.name}</div>`;
+                div.onclick = () => selectEnglish(index);
+                engContainer.appendChild(div);
+            });
+
+            chineseList.forEach((item, index) => {
+                const div = document.createElement("div");
+                div.className = "center_box";
+                if (selectedChinese === index && !isChnLocked(index)) {
+                    div.classList.add("isBg");
+                }
+                if (tempGreenChn === index) {
+                    div.classList.add("tempGreen");
+                }
+                if (tempRedChn === index) {
+                    div.classList.add("tempRed");
+                }
+                if (isChnLocked(index)) {
+                    div.classList.add("locked");
+                }
+                if (isPairing && !isChnLocked(index)) {
+                    div.style.pointerEvents = "none";
+                    div.style.opacity = "0.7";
+                }
+                div.innerHTML = `<div class="box_bottom">${item.typeName || item.name}</div>`;
+                div.onclick = () => selectChinese(index);
+                chnContainer.appendChild(div);
+            });
+        }
+
+        function isEngLocked(idx) {
+            return matchedPairs.some((i) => i.eng === idx);
+        }
+        function isChnLocked(idx) {
+            return matchedPairs.some((i) => i.chn === idx);
+        }
+
+        function selectEnglish(idx) {
+            if (isEngLocked(idx) || isPairing) return;
+            if (selectedChinese !== null) {
+                selectedEnglish = idx;
+                checkMatch();
+            } else {
+                selectedEnglish = idx;
+                renderList();
+            }
+        }
+
+        function selectChinese(idx) {
+            if (isChnLocked(idx) || isPairing) return;
+            if (selectedEnglish !== null) {
+                selectedChinese = idx;
+                checkMatch();
+            } else {
+                selectedChinese = idx;
+                renderList();
+            }
+        }
+
+        function clearTempStatus() {
+            tempGreenEng = null;
+            tempGreenChn = null;
+            tempRedEng = null;
+            tempRedChn = null;
+        }
+
+        function checkMatch() {
+            if (selectedEnglish === null || selectedChinese === null) return;
+
+            isPairing = true;
+            const eng = selectedEnglish;
+            const chn = selectedChinese;
+            const bottleArr = getCurrentBottleArr();
+            const englishList = bottleArr.slice(0, 4);
+            const chineseList = bottleArr.slice(4, 8);
+            const engItem = englishList[eng];
+            const chnItem = chineseList[chn];
+
+            const isRight = chnItem.name === engItem.name;
+
+            if (isRight) {
+                tempGreenEng = eng;
+                tempGreenChn = chn;
+            } else {
+                tempRedEng = eng;
+                tempRedChn = chn;
+            }
+            renderList();
+
+            let correctAnswerText = "";
+            if (!isRight) {
+                const correctPair = chineseList.find(item => item.name === engItem.name);
+                if (correctPair) {
+                    correctAnswerText = `${engItem.name} -> ${correctPair.typeName}`;
+                }
+            }
+
+            showResultModal(isRight, isRight ? "配对正确！" : correctAnswerText);
+        }
+
+        function showResultModal(isCorrect, answer) {
+            modal.classList.remove("hidden");
+            modal.className = "loading_bg";
+
+            resultStatusBtn.style.background = isCorrect
+                ? "rgba(93, 223, 22, 1)"
+                : "rgba(255, 60, 60, 1)";
+            resultStatusBtn.innerText = isCorrect ? "正确" : "不正确";
+            resultTips.innerText = isCorrect ? "回答的很好" : "正确答案是:";
+            resultText.innerText = answer;
+
+            playAudio(isCorrect);
+            setTimeout(() => modal.classList.add("animate-in"), 50);
+        }
+
+        function now() {
+            const engEl = document.querySelector(`#englishList .center_box:nth-child(${tempGreenEng !== null ? tempGreenEng + 1 : tempRedEng + 1})`);
+            const chnEl = document.querySelector(`#chineseList .center_box:nth-child(${tempGreenChn !== null ? tempGreenChn + 1 : tempRedChn + 1})`);
+            if (engEl) engEl.classList.add("fade-out");
+            if (chnEl) chnEl.classList.add("fade-out");
+
+            modal.classList.remove("animate-in");
+            
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                
+                const isRight = tempGreenEng !== null;
+                if (isRight) {
+                    matchedPairs.push({ eng: tempGreenEng, chn: tempGreenChn });
+                }
+                
+                clearTempStatus();
+                selectedEnglish = null;
+                selectedChinese = null;
+                isPairing = false;
+                
+                renderList();
+                updateComputed();
+
+                if (isCheckModal) {
+                    isCheckModal = false;
+                    onClose();
+                }
+            }, 1000);
+        }
+
+        function PunctuatorClick() {
+            if (matchedPairs.length !== 4) return;
+
+            const bottleArr = getCurrentBottleArr();
+            const englishList = bottleArr.slice(0, 4);
+            const chineseList = bottleArr.slice(4, 8);
+
+            let allRight = true;
+            matchedPairs.forEach((pair) => {
+                const engItem = englishList[pair.eng];
+                const chnItem = chineseList[pair.chn];
+                if (chnItem.name !== engItem.name) {
+                    allRight = false;
+                }
+            });
+
+            isCheckModal = true;
+
+            if (allRight) {
+                showResultModal(true, "全部配对正确！");
+            } else {
+                matchedPairs = [];
+                clearTempStatus();
+                renderList();
+                updateComputed();
+                if (!wrongQuestions.includes(IndexCurrent)) {
+                    wrongQuestions.push(IndexCurrent);
+                }
+                showResultModal(false, "请重新检查配对");
+            }
+        }
+
+        function FetchWiper(id, type) {
+            const findArr = leverDetail.find((item) => item.id === id);
+            SwiperArr = findArr?.Swiper?.find((item) => item.type === type) || null;
+            renderList();
+            updateComputed();
+        }
+
+        function nextQuestion() {
+            selectedEnglish = null;
+            selectedChinese = null;
+            matchedPairs = [];
+            clearTempStatus();
+            isPairing = false;
+
+            if (pageStatus === "normal") {
+                const isLastPage = IndexCurrent === totalPages - 1;
+                if (!isLastPage) {
+                    IndexCurrent++;
+                    renderList();
+                    updateComputed();
+                } else {
+                    goToFinishPage();
+                }
+                return;
+            }
+
+            if (pageStatus === "redoing") {
+                redoIndex++;
+                if (redoIndex < wrongQuestions.length) {
+                    IndexCurrent = wrongQuestions[redoIndex];
+                    renderList();
+                } else {
+                    goToFinishPage();
+                }
+            }
+        }
+
+        function onClose() {
+            clearTempStatus();
+            renderList();
+            nextQuestion();
+        }
+
+        function showModel() {
+            showBg = true;
+            document.getElementById("settingsModal").classList.remove("hidden");
+        }
+        function closeValue(val) {
+            showBg = val;
+            document.getElementById("settingsModal").classList.add("hidden");
+        }
+        function confirm(val) {
+            FontSize = val.fontSize;
+            autoPlayEnabled = val.show;
+            speedValue = Math.max(0.5, Math.min(1.5, Number(val.videoChange)));
+            closeValue(false);
+            localStorage.setItem(
+                "listenSettings",
+                JSON.stringify({ autoPlayEnabled, FontSize, speedValue }),
+            );
+        }
+
+        function back() {
+           window.history.back();
+        }
+
+        window.onload = function () {
+            const e = { id: "1", type: "1" };
+            BonesId = Number(e.id);
+            Typeis = Number(e.type);
+            FetchWiper(Number(e.id), Number(e.type));
+
+            const data = localStorage.getItem("listenSettings");
+            if (data) {
+                const settings = JSON.parse(data);
+                autoPlayEnabled = settings.autoPlayEnabled;
+                FontSize = settings.FontSize;
+                speedValue = settings.speedValue;
+            }
+            renderList();
+        };
+    </script>
+</body>
+</html>

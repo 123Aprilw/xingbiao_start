@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>英语学习 - 首页</title>
+  <link rel="stylesheet" href="static/style.css" />
+  <script src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.2.js"></script>
+  <style>
+    .story-card {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .story-cover {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+    }
+    
+    .story-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .story-info {
+      padding: 16px;
+    }
+    
+    .story-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    .story-meta {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    
+    .progress-bar {
+      height: 6px;
+      background-color: #f0f0f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: #ffd333;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    
+    .story-action {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #ff9533;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    
+    .story-action svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .tab-bar {
+      display: flex;
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .tab-item {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tab-item.active {
+      background-color: #ffd333;
+      color: #000;
+      font-weight: 600;
+    }
+    
+    .course-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    
+    .course-card {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+    }
+    
+    .course-cover {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    }
+    
+    .course-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .course-name {
+      padding: 12px;
+      font-size: 14px;
+      color: #333;
+      text-align: center;
+    }
+    
+    .badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: #ff9533;
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    
+    .header-user {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="header">
+      <div class="header-user">U</div>
+      <div class="header-title">英语学习</div>
+      <div class="header-right"></div>
+    </div>
+    
+    <div class="container">
+      <div class="story-card" onclick="goToStory('At The Lake')">
+        <div class="story-cover">
+          <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=children%20reading%20storybook%20by%20the%20lake%20illustration%20colorful%20cartoon%20style&image_size=landscape_16_9" alt="At The Lake" />
+          <div class="badge">进行中</div>
+        </div>
+        <div class="story-info">
+          <div class="story-title">At The Lake</div>
+          <div class="story-meta">等级：AA | 词汇：12个</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 60%"></div>
+          </div>
+          <div class="story-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+            继续学习
+          </div>
+        </div>
+      </div>
+      
+      <div class="tab-bar">
+        <div class="tab-item active" onclick="switchTab('recommend')">推荐</div>
+        <div class="tab-item" onclick="switchTab('hot')">热门</div>
+        <div class="tab-item" onclick="switchTab('new')">最新</div>
+      </div>
+      
+      <div class="section-title">课程列表</div>
+      <div class="course-list">
+        <div class="course-card" onclick="goToStory('The Frog')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20frog%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Frog" />
+          </div>
+          <div class="course-name">The Frog</div>
+        </div>
+        <div class="course-card" onclick="goToStory('The Cat')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20cat%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Cat" />
+          </div>
+          <div class="course-name">The Cat</div>
+        </div>
+        <div class="course-card" onclick="goToStory('The Dog')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20dog%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Dog" />
+          </div>
+          <div class="course-name">The Dog</div>
+        </div>
+        <div class="course-card" onclick="goToStory('The Bird')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20bird%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Bird" />
+          </div>
+          <div class="course-name">The Bird</div>
+        </div>
+        <div class="course-card" onclick="goToStory('The Fish')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20fish%20underwater%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Fish" />
+          </div>
+          <div class="course-name">The Fish</div>
+        </div>
+        <div class="course-card" onclick="goToStory('The Bear')">
+          <div class="course-cover">
+            <img src="https://neeko-copilot.bytedance.net/api/text2image?prompt=cute%20bear%20illustration%20cartoon%20style%20colorful&image_size=square" alt="The Bear" />
+          </div>
+          <div class="course-name">The Bear</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    function goToStory(storyName) {
+      window.location.href = `Home/Home.html?story=${encodeURIComponent(storyName)}`;
+    }
+    
+    function switchTab(tab) {
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+    }
+  </script>
+</body>
+</html>
